@@ -9,7 +9,7 @@
 <title>BVI Sailing · March 2026</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Cinzel:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--ocean:#071e3d;--ocean-mid:#0c2d5a;--ocean-deep:#040e1f;--sand:#f4e8d1;--sand-muted:#d4c4a8;--coral:#ff6b4a;--coral-glow:#ff8a6e;--teal:#2dd4bf;--gold:#d4a843;--brass:#b8943e;--brass-light:#e2c36b;--wind-blue:#4db8ff;--text-primary:#e8e0d4;--text-secondary:#9aada8;--glass:rgba(7,25,52,0.92);--glass-border:rgba(201,168,76,0.18);--glass-border-subtle:rgba(201,168,76,0.08);--wave-bg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='20'%3E%3Cpath d='M0 10Q30 0 60 10Q90 20 120 10' fill='none' stroke='%232dd4bf' stroke-width='.6' opacity='.06'/%3E%3C/svg%3E");--nav-h:52px;--tl-h:130px;--safe-b:env(safe-area-inset-bottom,0px)}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -153,7 +153,7 @@ html,body{height:100%;height:-webkit-fill-available;font-family:'IBM Plex Sans',
 #flights-view{position:absolute;top:var(--nav-h);left:0;right:0;bottom:0;overflow-y:auto;display:none;background:linear-gradient(180deg,var(--ocean-deep),var(--ocean),var(--ocean-mid));-webkit-overflow-scrolling:touch}
 .fl-c{max-width:640px;margin:0 auto;padding:24px 16px 80px}
 .fl-header{text-align:center;margin-bottom:20px}
-.fl-header h1{font-family:'Outfit',sans-serif;font-size:28px;font-weight:600;letter-spacing:.5px;color:var(--sand);margin-bottom:4px}
+.fl-header h1{font-family:'Cinzel',serif;font-size:28px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--sand);margin-bottom:4px}
 .fl-header .sub{font-size:13px;color:var(--text-secondary);font-weight:300}
 .fl-updated{display:flex;align-items:center;justify-content:center;gap:12px;padding:6px 12px;margin-bottom:12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-secondary);opacity:.6;flex-wrap:wrap}
 .fl-updated svg{width:12px;height:12px;stroke:var(--text-secondary);fill:none;stroke-width:2;flex-shrink:0}
@@ -270,6 +270,6 @@ html,body{height:100%;height:-webkit-fill-available;font-family:'IBM Plex Sans',
 </div>
 <div id="itin-view"><div class="ic" id="itinC"></div></div>
 <div id="flights-view"><div class="fl-c" id="flightsC"></div></div>
-<script src="app.js?v=8"></script>
+<script src="app.js?v=9"></script>
 </body>
 </html>
