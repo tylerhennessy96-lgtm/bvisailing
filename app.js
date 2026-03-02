@@ -472,11 +472,9 @@ function buildItin(){
 const PASSENGERS=[
   {id:'tyler',name:'Tyler',status:'on_time',outbound:[
     {airline:'British Airways',flight:'BA207',from:'LHR',to:'MIA',dep:'9:45 AM',date:'Sat Mar 7',status:'on_time'},
-    {layover:'~8h 30m in MIA'},
     {airline:'AA / Envoy',flight:'AA3947',from:'MIA',to:'EIS',dep:'6:15 PM',date:'Sat Mar 7',status:'on_time'}
   ],ret:[
     {airline:'AA / Envoy',flight:'AA3946',from:'EIS',to:'MIA',dep:'12:50 PM',date:'Sun Mar 15',status:'on_time'},
-    {layover:'~5h 20m in MIA'},
     {airline:'British Airways',flight:'BA206',from:'MIA',to:'LHR',dep:'6:10 PM',date:'Sun Mar 15',status:'on_time'}
   ]},
   {id:'guest2',name:'Guest 2',status:'scheduled',outbound:[{airline:'TBD',flight:'—',from:'TBD',to:'EIS',dep:'TBD',date:'Mar 7',status:'scheduled'}],ret:[{airline:'TBD',flight:'—',from:'EIS',to:'TBD',dep:'TBD',date:'Mar 15',status:'scheduled'}]},
@@ -565,38 +563,30 @@ function buildFlights(){
     // Outbound legs
     h+=`<div class="fl-leg-group"><div class="fl-leg-label">OUTBOUND — ${p.outbound[0]?.date||'TBD'}</div>`;
     p.outbound.forEach(leg=>{
-      if(leg.layover){
-        h+=`<div class="fl-layover-mini">⏱ ${leg.layover}</div>`;
-      }else{
-        const lc=statusColor(leg.status);
-        h+=`<div class="fl-leg">
-          <div class="fl-leg-plane">✈</div>
-          <div class="fl-leg-info">
-            <div class="fl-leg-route">${leg.from} → ${leg.to}</div>
-            <div class="fl-leg-meta"><span>${leg.airline}</span><span>${leg.flight}</span><span>${leg.dep}</span></div>
-          </div>
-          <div class="fl-leg-status ${lc}">${statusLabel(leg.status)}</div>
-        </div>`;
-      }
+      const lc=statusColor(leg.status);
+      h+=`<div class="fl-leg">
+        <div class="fl-leg-plane">✈</div>
+        <div class="fl-leg-info">
+          <div class="fl-leg-route">${leg.from} → ${leg.to}</div>
+          <div class="fl-leg-meta"><span>${leg.airline}</span><span>${leg.flight}</span><span>${leg.dep}</span></div>
+        </div>
+        <div class="fl-leg-status ${lc}">${statusLabel(leg.status)}</div>
+      </div>`;
     });
     h+=`</div>`;
 
     // Return legs
     h+=`<div class="fl-leg-group"><div class="fl-leg-label">RETURN — ${p.ret[0]?.date||'TBD'}</div>`;
     p.ret.forEach(leg=>{
-      if(leg.layover){
-        h+=`<div class="fl-layover-mini">⏱ ${leg.layover}</div>`;
-      }else{
-        const lc=statusColor(leg.status);
-        h+=`<div class="fl-leg">
-          <div class="fl-leg-plane">✈</div>
-          <div class="fl-leg-info">
-            <div class="fl-leg-route">${leg.from} → ${leg.to}</div>
-            <div class="fl-leg-meta"><span>${leg.airline}</span><span>${leg.flight}</span><span>${leg.dep}</span></div>
-          </div>
-          <div class="fl-leg-status ${lc}">${statusLabel(leg.status)}</div>
-        </div>`;
-      }
+      const lc=statusColor(leg.status);
+      h+=`<div class="fl-leg">
+        <div class="fl-leg-plane">✈</div>
+        <div class="fl-leg-info">
+          <div class="fl-leg-route">${leg.from} → ${leg.to}</div>
+          <div class="fl-leg-meta"><span>${leg.airline}</span><span>${leg.flight}</span><span>${leg.dep}</span></div>
+        </div>
+        <div class="fl-leg-status ${lc}">${statusLabel(leg.status)}</div>
+      </div>`;
     });
     h+=`</div></div></div>`;
   });
