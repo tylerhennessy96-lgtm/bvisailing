@@ -82,38 +82,93 @@ pois:[{name:'The Moorings Yacht Club',type:'landmark',lat:18.4268,lng:-64.6165,i
 wx:{wind:'15–18 kts',dir:'ENE',deg:72,temp:'83°F',seas:'1–2 ft'}}
 ];
 
-// ━━━ DATE AWARENESS ━━━
-function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+// ━━━ ROUTE WAYPOINTS (realistic sailing paths around islands) ━━━
+const ROUTES=[
+  // Leg 0: Road Town → Norman Island (south through Sir Francis Drake Channel)
+  [[18.4268,-64.6165],[18.4100,-64.6180],[18.3700,-64.6170],[18.3400,-64.6185],[18.3195,-64.6189]],
+  // Leg 1: Norman → Cooper (NE through channel, past Salt & Peter Islands)
+  [[18.3195,-64.6189],[18.3250,-64.5950],[18.3400,-64.5700],[18.3600,-64.5400],[18.3830,-64.5120]],
+  // Leg 2: Cooper → Virgin Gorda (east past Ginger, round south VG)
+  [[18.3830,-64.5120],[18.3900,-64.4800],[18.3950,-64.4500],[18.4100,-64.4200],[18.4200,-64.3900],[18.4400,-64.3700],[18.4700,-64.3550],[18.4900,-64.3550]],
+  // Leg 3: North Sound → Anegada (north over open water)
+  [[18.4900,-64.3550],[18.5200,-64.3500],[18.5800,-64.3450],[18.6500,-64.3400],[18.7270,-64.3350]],
+  // Leg 4: Anegada → Trellis Bay (south past Necker, round east Tortola)
+  [[18.7270,-64.3350],[18.6500,-64.3500],[18.5700,-64.3900],[18.5200,-64.4400],[18.4800,-64.4800],[18.4600,-64.5100],[18.4430,-64.5320]],
+  // Leg 5: Trellis Bay → White Bay JVD (west along north coast, round west)
+  [[18.4430,-64.5320],[18.4200,-64.5400],[18.3900,-64.5600],[18.3700,-64.6000],[18.3600,-64.6400],[18.3500,-64.6800],[18.3700,-64.7100],[18.4000,-64.7300],[18.4200,-64.7500],[18.4380,-64.7530]],
+  // Leg 6: White Bay → Great Harbour (short hop around point)
+  [[18.4380,-64.7530],[18.4420,-64.7580],[18.4450,-64.7650],[18.4480,-64.7680]],
+  // Leg 7: JVD → Road Town (east through channel back home)
+  [[18.4480,-64.7680],[18.4300,-64.7500],[18.4100,-64.7300],[18.3900,-64.7000],[18.3700,-64.6600],[18.3800,-64.6300],[18.4000,-64.6200],[18.4268,-64.6165]]
+];
+
+// ━━━ DATE AWARENESS (timezone-safe) ━━━
+function parseLocalDate(iso){
+  const [y,m,d]=iso.split('-').map(Number);
+  return new Date(y,m-1,d);
+}
+function todayLocal(){
+  const d=new Date();
+  d.setHours(0,0,0,0);
+  return d;
+}
 function getTodayIdx(){
-  const t=todayStr(),td=new Date(t),s=new Date(DAYS[0].iso),e=new Date('2026-03-15');
-  for(let i=0;i<DAYS.length;i++)if(DAYS[i].iso===t)return i;
-  if(t==='2026-03-15')return DAYS.length-1;
-  if(td>=s&&td<=e){for(let i=DAYS.length-1;i>=0;i--)if(new Date(DAYS[i].iso)<=td)return i}
+  const today=todayLocal(),s=parseLocalDate(DAYS[0].iso),e=parseLocalDate('2026-03-15');
+  const todayISO=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+  for(let i=0;i<DAYS.length;i++)if(DAYS[i].iso===todayISO)return i;
+  if(todayISO==='2026-03-15')return DAYS.length-1;
+  if(today>=s&&today<=e){for(let i=DAYS.length-1;i>=0;i--)if(parseLocalDate(DAYS[i].iso)<=today)return i}
   return 0;
 }
 function tripStatus(){
-  const td=new Date(todayStr()),s=new Date(DAYS[0].iso),e=new Date('2026-03-15');
-  return td<s?'before':td>e?'after':'during';
+  const today=todayLocal(),s=parseLocalDate(DAYS[0].iso),e=parseLocalDate('2026-03-15');
+  return today<s?'before':today>e?'after':'during';
 }
 const todayIdx=getTodayIdx();
 
-// ━━━ MAP ━━━
-const map=L.map('map',{center:[18.50,-64.55],zoom:11,zoomControl:true,maxZoom:16});
+// ━━━ MAP (maxZoom capped at 13) ━━━
+const map=L.map('map',{center:[18.50,-64.55],zoom:11,zoomControl:true,maxZoom:13});
 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}',{
   attribution:'Tiles &copy; Esri &mdash; GEBCO, NOAA, National Geographic',
-  maxZoom:16
+  maxZoom:13
 }).addTo(map);
 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Reference/MapServer/tile/{z}/{y}/{x}',{
-  attribution:'',maxZoom:16
+  attribution:'',maxZoom:13
 }).addTo(map);
 
-// Full route (faded)
-L.polyline(DAYS.map(d=>[d.lat,d.lng]),{color:'#ff6b4a',weight:2.5,opacity:.2,dashArray:'6,10',lineCap:'round'}).addTo(map);
+// ━━━ ROUTE LINES (waypoint-based with glow) ━━━
+// Full route: all waypoints chained, faded glow underline
+const allWaypoints=ROUTES.reduce((acc,leg)=>{
+  if(acc.length===0)return leg.slice();
+  return acc.concat(leg.slice(1));
+},[]);
 
-// Active route (fills per day)
-const activeLine=L.polyline([],{color:'#ff6b4a',weight:3,opacity:.9,lineCap:'round'}).addTo(map);
+// Shadow glow line (wide, faint)
+L.polyline(allWaypoints,{color:'#d4a843',weight:12,opacity:0.08,lineCap:'round',lineJoin:'round'}).addTo(map);
+// Faded full route dashes
+L.polyline(allWaypoints,{color:'#ff8a6e',weight:2.5,opacity:0.2,dashArray:'6,10',lineCap:'round'}).addTo(map);
 
-// Day stop markers
+// Per-leg invisible hit-area polylines with tooltips/popups
+const legHitLines=[];
+ROUTES.forEach((leg,i)=>{
+  const fromDay=DAYS[i],toDay=DAYS[i+1];
+  if(!toDay)return;
+  const hitLine=L.polyline(leg,{color:'#ff6b4a',weight:14,opacity:0,interactive:true}).addTo(map);
+  hitLine.bindPopup(`
+    <strong>Day ${fromDay.day} → Day ${toDay.day}</strong><br>
+    ${fromDay.label} → ${toDay.label}<br>
+    <span style="color:var(--teal)">${toDay.nm}</span> · ${toDay.sail}<br>
+    <span style="color:var(--wind-blue)">Wind: ${toDay.wx.wind} ${toDay.wx.dir}</span><br>
+    <span style="color:var(--gold)">Seas: ${toDay.wx.seas}</span>
+  `);
+  legHitLines.push(hitLine);
+});
+
+// Active route (fills per day) - glow + main
+const activeGlow=L.polyline([],{color:'#d4a843',weight:10,opacity:0.12,lineCap:'round',lineJoin:'round'}).addTo(map);
+const activeLine=L.polyline([],{color:'#ff6b4a',weight:4.5,opacity:.9,lineCap:'round',lineJoin:'round'}).addTo(map);
+
+// ━━━ DAY STOP MARKERS ━━━
 const stopMk=[];
 DAYS.forEach((d,i)=>{
   const ic=L.divIcon({className:'',html:`<div class="ms ${d.day===0?'d0m':''}" id="s${i}">${d.day}</div>`,iconSize:[30,30],iconAnchor:[15,15]});
@@ -123,30 +178,31 @@ DAYS.forEach((d,i)=>{
   stopMk.push(m);
 });
 
-// POI markers
+// ━━━ POI MARKERS (with hover tooltips) ━━━
 const poiMk=[];
 DAYS.forEach((d,di)=>{
   d.pois.forEach(p=>{
     const tc=p.type==='snorkel'?'mp-sn':p.type==='bar'?'mp-br':p.type==='restaurant'?'mp-rs':'mp-lm';
     const ic=L.divIcon({className:'',html:`<div class="mp ${tc}">${p.icon}</div>`,iconSize:[24,24],iconAnchor:[12,12]});
     const m=L.marker([p.lat,p.lng],{icon:ic,zIndexOffset:50}).addTo(map);
+    m.bindTooltip(`<strong>${p.name}</strong><br>${p.note}`,{direction:'top',offset:[0,-8]});
     m.bindPopup(`<strong>${p.name}</strong><br>${p.note}<br><em>Day ${d.day}</em>`);
     m.di=di;poiMk.push(m);
   });
 });
 
-// ━━━ TIMELINE DOTS ━━━
+// ━━━ TIMELINE DOTS (with Day N: prefix) ━━━
 const dotRow=document.getElementById('dotRow');
 DAYS.forEach((d,i)=>{
   const dot=document.createElement('div');
   dot.className='tl-dot'+(d.day===0?' d0':'');
-  dot.innerHTML=`<div class="tl-dot-lbl">${d.day===0?'Start':d.label}</div>`;
+  dot.innerHTML=`<div class="tl-dot-lbl">${d.day===0?'D0: Start':'D'+d.day+': '+d.label}</div>`;
   dot.onclick=()=>setDay(i);
   dotRow.appendChild(dot);
 });
 
 // ━━━ STATE ━━━
-let curDay=0,mobExp=false;
+let curDay=0;
 const isMob=()=>window.innerWidth<=768;
 
 function setDay(idx){
@@ -162,10 +218,14 @@ function setDay(idx){
   // Track fill
   document.getElementById('trackFill').style.width=(DAYS.length>1?(idx/(DAYS.length-1))*100:0)+'%';
 
-  // Label + badge
+  // Label + badge (timezone-safe countdown)
   let badge='';
   if(ts==='during'&&isToday)badge='<span class="live-badge">TODAY</span>';
-  else if(ts==='before'){const dl=Math.ceil((new Date(DAYS[0].iso)-new Date())/864e5);badge=`<span class="live-badge future">${dl}d to go</span>`}
+  else if(ts==='before'){
+    const today=todayLocal(),start=parseLocalDate(DAYS[0].iso);
+    const dl=Math.ceil((start-today)/864e5);
+    badge=`<span class="live-badge future">${dl}d to go</span>`;
+  }
   document.getElementById('tlLabel').innerHTML=`Day ${d.day} · ${d.title} ${badge} <span class="ds">${d.date}</span>`;
 
   // Weather chips (timeline)
@@ -182,20 +242,27 @@ function setDay(idx){
   document.getElementById('prevBtn').disabled=idx===0;
   document.getElementById('nextBtn').disabled=idx===DAYS.length-1;
 
-  // Route line
-  activeLine.setLatLngs(DAYS.slice(0,idx+1).map(x=>[x.lat,x.lng]));
+  // Active route line (waypoint-based)
+  let activeCoords=[];
+  for(let li=0;li<idx&&li<ROUTES.length;li++){
+    if(activeCoords.length===0)activeCoords=ROUTES[li].slice();
+    else activeCoords=activeCoords.concat(ROUTES[li].slice(1));
+  }
+  activeLine.setLatLngs(activeCoords);
+  activeGlow.setLatLngs(activeCoords);
 
   // Markers
   stopMk.forEach((m,i)=>{const el=document.getElementById('s'+i);if(el)el.classList.toggle('active',i===idx)});
   poiMk.forEach(m=>{const el=m.getElement();if(el){el.style.opacity=m.di===idx?'1':'0.2';el.style.transition='opacity .3s,transform .3s';el.style.transform=m.di===idx?'scale(1)':'scale(.7)'}});
 
-  // Fly
-  if(d.pois.length>1){const b=L.latLngBounds([[d.lat,d.lng]]);d.pois.forEach(p=>b.extend([p.lat,p.lng]));map.flyToBounds(b.pad(.3),{duration:.8,maxZoom:14})}
-  else map.flyTo([d.lat,d.lng],13,{duration:.8});
+  // Fly (maxZoom capped at 12)
+  if(d.pois.length>1){const b=L.latLngBounds([[d.lat,d.lng]]);d.pois.forEach(p=>b.extend([p.lat,p.lng]));map.flyToBounds(b.pad(.3),{duration:.8,maxZoom:12})}
+  else map.flyTo([d.lat,d.lng],12,{duration:.8});
 
   // Card
   updateCard(d,isToday);
-  if(isMob()){document.getElementById('dayCard').classList.remove('collapsed');mobExp=true}
+
+  // Mobile: do NOT auto-open drawer; user taps toggle button
 }
 
 function updateCard(d,isToday){
@@ -205,8 +272,8 @@ function updateCard(d,isToday){
     return `<div class="poi-item"><div class="poi-i ${tc}">${p.icon}</div><div><div style="font-weight:500">${p.name}</div><div style="font-size:10px;color:var(--text-secondary);margin-top:1px">${p.note}</div></div></div>`;
   }).join('');
   const badge=isToday?' <span class="live-badge" style="font-size:9px">TODAY</span>':'';
-  const drag=isMob()?'<div class="dc-drag" style="display:block"></div>':'';
-  c.innerHTML=`${drag}
+  const closeBtn=isMob()?'<button class="dc-close" onclick="closeMobileCard()">✕</button>':'';
+  c.innerHTML=`${closeBtn}
     <div class="dc-num">Day ${d.day} · ${d.sail}${badge}</div>
     <div class="dc-title">${d.title}</div>
     <div class="dc-route">${d.route} <span class="nm">${d.nm}</span></div>
@@ -216,13 +283,20 @@ function updateCard(d,isToday){
 }
 
 function nav(delta){const n=curDay+delta;if(n>=0&&n<DAYS.length)setDay(n)}
-function toggleMobileCard(){const c=document.getElementById('dayCard');mobExp=!mobExp;c.classList.toggle('collapsed',!mobExp)}
+
+// Mobile drawer toggle
+function toggleMobileCard(){
+  const c=document.getElementById('dayCard');
+  c.classList.toggle('drawer-open');
+}
+function closeMobileCard(){
+  document.getElementById('dayCard').classList.remove('drawer-open');
+}
 
 // ━━━ SWIPE ━━━
 let tx=0,ty=0;
 document.querySelector('.tl-panel').addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
 document.querySelector('.tl-panel').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5){dx<0?nav(1):nav(-1)}},{passive:true});
-document.getElementById('dayCard').addEventListener('touchstart',e=>{if(e.target.classList.contains('dc-drag'))toggleMobileCard()},{passive:true});
 
 // Keyboard
 document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')nav(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')nav(-1)});
@@ -243,13 +317,17 @@ function showView(v){
   }
 }
 
-// ━━━ ITINERARY PAGE ━━━
+// ━━━ ITINERARY PAGE (with weather badges per day) ━━━
 let itinBuilt=false;
 function buildItin(){
   if(itinBuilt)return;itinBuilt=true;
   const c=document.getElementById('itinC'),ts=tripStatus();
   let sn='';
-  if(ts==='before'){const dl=Math.ceil((new Date(DAYS[0].iso)-new Date())/864e5);sn=`<div style="margin-top:12px"><span class="live-badge future" style="font-size:11px">${dl} days until departure</span></div>`}
+  if(ts==='before'){
+    const today=todayLocal(),start=parseLocalDate(DAYS[0].iso);
+    const dl=Math.ceil((start-today)/864e5);
+    sn=`<div style="margin-top:12px"><span class="live-badge future" style="font-size:11px">${dl} days until departure</span></div>`;
+  }
   else if(ts==='during')sn=`<div style="margin-top:12px"><span class="live-badge" style="font-size:11px">Trip in progress — Day ${DAYS[todayIdx].day}</span></div>`;
 
   let h=`<div class="ih"><h1>BVI Sailing Itinerary</h1><div class="sub">March 6–15, 2026 · 10 Guests · 52-foot Catamaran</div>${sn}<div class="meta"><span>⛵ THE MOORINGS, ROAD TOWN</span><span>🌊 15–20 KT TRADES</span><span>☀ 82–84°F</span></div></div>`;
@@ -260,6 +338,11 @@ function buildItin(){
       <div class="id-dot${d.day===0?' dz':''}">${d.day}</div>
       <div class="id-h"><div class="id-date">${d.date}${tb}</div><div class="id-tag">${d.nm} · ${d.sail}</div></div>
       <div class="id-route">${d.route}</div>
+      <div class="id-wx">
+        <span class="id-wx-chip">💨 ${d.wx.wind} ${d.wx.dir}</span>
+        <span class="id-wx-chip">🌡 ${d.wx.temp}</span>
+        <span class="id-wx-chip">🌊 ${d.wx.seas}</span>
+      </div>
       <div class="id-body"><p>${d.desc}</p></div>
       <div class="id-tips"><h4>Tips & Notes</h4><ul>${d.tips.map(t=>`<li>${t}</li>`).join('')}</ul></div>
     </div>`;
@@ -314,8 +397,17 @@ function buildItin(){
   if(ts==='during'){const el=document.getElementById('itin-today');if(el)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),300)}
 }
 
+// ━━━ LEGEND POSITIONING (below weather card) ━━━
+function positionLegend(){
+  const wxCard=document.getElementById('wxCard');
+  const legend=document.getElementById('legendCard');
+  if(!wxCard||!legend||isMob())return;
+  const wxRect=wxCard.getBoundingClientRect();
+  legend.style.top=(wxRect.bottom+12)+'px';
+}
+
 // ━━━ RESIZE ━━━
-let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{map.invalidateSize();wResize();if(!isMob())document.getElementById('dayCard').classList.remove('collapsed')},200)});
+let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{map.invalidateSize();wResize();positionLegend();if(!isMob())document.getElementById('dayCard').classList.remove('drawer-open')},200)});
 
 // ━━━ WEATHER CARD (Compass Rose) ━━━
 function updateWxCard(wx){
@@ -358,6 +450,8 @@ function updateWxCard(wx){
       <div class="wx-card-row"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg><span class="val">${wx.temp}</span></div>
       <div class="wx-card-row"><svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round"><path d="M2 12c2-4 5-6 10-6s8 2 10 6"/><path d="M2 18c2-4 5-6 10-6s8 2 10 6"/></svg><span class="val">${wx.seas}</span></div>
     </div>`;
+  // Reposition legend after wx card renders
+  requestAnimationFrame(positionLegend);
 }
 
 // ━━━ WIND PARTICLES (Enhanced) ━━━
@@ -449,3 +543,4 @@ function wAnimate(){
 // ━━━ INIT ━━━
 wResize();wAnimate();
 setDay(getTodayIdx());
+positionLegend();

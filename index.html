@@ -76,8 +76,10 @@ html,body{height:100%;height:-webkit-fill-available;font-family:'IBM Plex Sans',
 .tip-box strong{color:var(--gold);font-weight:500}
 .tip-list{list-style:none;margin-top:5px}.tip-list li{padding-left:14px;position:relative;margin-bottom:2px}.tip-list li::before{content:'→';position:absolute;left:0;color:var(--gold)}
 .dc-drag{display:none;width:36px;height:4px;background:rgba(201,168,76,.3);border-radius:2px;margin:0 auto 12px;cursor:pointer}
+.dc-close{display:none;position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;border:1px solid var(--glass-border);background:rgba(201,168,76,.08);color:var(--text-secondary);cursor:pointer;font-size:14px;align-items:center;justify-content:center;z-index:2}
+.dc-close:hover{color:var(--text-primary);background:rgba(201,168,76,.15)}
 
-.legend{position:fixed;top:calc(var(--nav-h) + 225px);right:14px;z-index:800;backdrop-filter:blur(24px);border:1px solid var(--glass-border);border-radius:10px;padding:10px 14px;display:flex;flex-direction:column;gap:6px;background:var(--wave-bg) repeat,var(--glass);background-size:120px 20px,100% 100%}
+.legend{position:fixed;top:calc(var(--nav-h) + 240px);right:14px;z-index:800;backdrop-filter:blur(24px);border:1px solid var(--glass-border);border-radius:10px;padding:10px 14px;display:flex;flex-direction:column;gap:6px;background:var(--wave-bg) repeat,var(--glass);background-size:120px 20px,100% 100%}
 .lg-i{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--text-secondary)}
 .lg-s{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px}
 .mob-tog{display:none;position:fixed;z-index:850;right:14px;width:42px;height:42px;border-radius:50%;border:1px solid var(--glass-border);background:var(--glass);backdrop-filter:blur(20px);color:var(--text-primary);font-size:18px;cursor:pointer;align-items:center;justify-content:center}
@@ -96,7 +98,9 @@ html,body{height:100%;height:-webkit-fill-available;font-family:'IBM Plex Sans',
 .id-h{display:flex;align-items:baseline;gap:10px;margin-bottom:5px;flex-wrap:wrap}
 .id-date{font-family:'DM Serif Display',serif;font-size:20px;color:var(--sand)}
 .id-tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--teal);background:rgba(45,212,191,.1);padding:2px 9px;border-radius:12px}
-.id-route{font-size:13px;color:var(--coral-glow);font-weight:500;margin-bottom:10px}
+.id-route{font-size:13px;color:var(--coral-glow);font-weight:500;margin-bottom:8px}
+.id-wx{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.id-wx-chip{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-secondary);padding:3px 10px;border-radius:12px;background:rgba(201,168,76,.04);border:1px solid var(--glass-border-subtle);display:inline-flex;align-items:center;gap:4px}
 .id-body{font-size:13px;line-height:1.7;color:var(--text-primary);font-weight:300}
 .id-body p{margin-bottom:10px}
 .id-tips{margin-top:10px;padding:12px 14px;border-radius:10px;background:rgba(212,168,67,.04);border:1px solid rgba(212,168,67,.1)}
@@ -121,6 +125,8 @@ html,body{height:100%;height:-webkit-fill-available;font-family:'IBM Plex Sans',
 .leaflet-popup-tip{background:var(--ocean-mid)!important}
 .leaflet-popup-content{font-family:'IBM Plex Sans',sans-serif!important;font-size:12px!important;line-height:1.5!important;margin:10px 14px!important}
 .leaflet-popup-content strong{font-family:'DM Serif Display',serif;font-size:14px;color:var(--sand)}
+.leaflet-tooltip{background:var(--glass)!important;color:var(--text-primary)!important;border:1px solid var(--glass-border)!important;border-radius:8px!important;font-family:'IBM Plex Sans',sans-serif!important;font-size:11px!important;line-height:1.4!important;padding:6px 10px!important;box-shadow:0 4px 16px rgba(0,0,0,.3)!important}
+.leaflet-tooltip::before{border-top-color:var(--glass-border)!important}
 .leaflet-control-zoom a{background:var(--glass)!important;color:var(--text-primary)!important;border-color:var(--glass-border)!important}
 .leaflet-control-attribution{background:var(--glass)!important;color:var(--text-secondary)!important;font-size:8px!important}
 
@@ -143,10 +149,12 @@ html,body{height:100%;height:-webkit-fill-available;font-family:'IBM Plex Sans',
 @media(max-width:768px){
 :root{--nav-h:48px;--tl-h:110px}
 .nav{padding:0 12px}.nav-brand{font-size:15px}.nav-meta{display:none}.nav-tab{padding:5px 12px;font-size:11px}
-.dc{position:fixed;top:auto;left:0;right:0;width:100%;bottom:var(--tl-h);max-height:48vh;border-radius:16px 16px 0 0;padding:14px 16px;transition:transform .35s cubic-bezier(.4,0,.2,1),.3s}
-.dc.collapsed{transform:translateY(calc(100% - 58px))}.dc-drag{display:block}
+.dc{position:fixed;top:var(--nav-h);left:0;bottom:var(--tl-h);width:80%;max-width:340px;max-height:none;border-radius:0 14px 14px 0;padding:16px;transform:translateX(-100%);transition:transform .35s cubic-bezier(.4,0,.2,1);z-index:850;overflow-y:auto}
+.dc.drawer-open{transform:translateX(0)}
+.dc-drag{display:none!important}
+.dc-close{display:flex}
 .dc-title{font-size:18px}.dc-desc{font-size:12px}
-.mob-tog{display:flex;bottom:calc(var(--tl-h) + 8px)}.legend{display:none}
+.mob-tog{display:flex;left:14px;right:auto;bottom:calc(var(--tl-h) + 8px)}.legend{display:none}
 .tl-panel{padding:10px 12px calc(10px + var(--safe-b))}.tl-label{font-size:14px}
 .tl-wx{gap:4px;overflow-x:auto;flex-wrap:nowrap}.wx-chip{font-size:10px;padding:3px 7px}
 .tl-dot-lbl{font-size:8px;bottom:-18px}.tl-btn{width:34px;height:34px}
@@ -176,8 +184,8 @@ html,body{height:100%;height:-webkit-fill-available;font-family:'IBM Plex Sans',
   <div id="map"></div>
   <canvas id="windCanvas"></canvas>
   <div class="wx-card" id="wxCard"></div>
-  <div class="dc" id="dayCard"><div class="dc-drag"></div></div>
-  <div class="legend">
+  <div class="dc" id="dayCard"></div>
+  <div class="legend" id="legendCard">
     <div class="lg-i"><div class="lg-s" style="background:var(--teal);color:#fff;font-size:9px;font-weight:700">0</div>Start</div>
     <div class="lg-i"><div class="lg-s" style="background:var(--coral);color:#fff;font-size:9px;font-weight:700">1</div>Day Stop</div>
     <div class="lg-i"><div class="lg-s mp-sn" style="width:20px;height:20px;font-size:11px">🤿</div>Snorkeling</div>
@@ -185,7 +193,7 @@ html,body{height:100%;height:-webkit-fill-available;font-family:'IBM Plex Sans',
     <div class="lg-i"><div class="lg-s mp-br" style="width:20px;height:20px;font-size:11px">🍹</div>Bar</div>
     <div class="lg-i"><div class="lg-s mp-lm" style="width:20px;height:20px;font-size:11px">⚓</div>Landmark</div>
   </div>
-  <button class="mob-tog" onclick="toggleMobileCard()">ℹ️</button>
+  <button class="mob-tog" id="mobTogBtn" onclick="toggleMobileCard()">ℹ️</button>
   <div class="tl-panel">
     <div class="tl-header">
       <div class="tl-label" id="tlLabel"></div>
