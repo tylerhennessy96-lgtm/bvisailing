@@ -151,21 +151,21 @@ DAYS.forEach(d=>{d.wx.moon=getMoonPhase(d.iso)});
 const map=L.map('map',{center:[18.50,-64.55],zoom:11,zoomControl:false,maxZoom:13});
 L.control.zoom({position:'topright'}).addTo(map);
 
-// Tile layers — satellite (default) & ocean chart (alternate)
+// Tile layers — ocean chart (default) & satellite (alternate)
+const oceanBase=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}',{
+  attribution:'Tiles &copy; Esri &mdash; GEBCO, NOAA, National Geographic',maxZoom:13
+}).addTo(map);
+const oceanRef=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Reference/MapServer/tile/{z}/{y}/{x}',{
+  attribution:'',maxZoom:13
+}).addTo(map);
 const satLayer=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
   attribution:'Tiles &copy; Esri &mdash; Earthstar Geographics',maxZoom:13
-}).addTo(map);
+});
 // Labels overlay for satellite view (CartoDB Voyager labels only)
 const labelsLayer=L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png',{
   attribution:'Labels &copy; OpenStreetMap &copy; CARTO',maxZoom:13,subdomains:'abcd',pane:'shadowPane'
-}).addTo(map);
-const oceanBase=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}',{
-  attribution:'Tiles &copy; Esri &mdash; GEBCO, NOAA, National Geographic',maxZoom:13
 });
-const oceanRef=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Reference/MapServer/tile/{z}/{y}/{x}',{
-  attribution:'',maxZoom:13
-});
-let isSatellite=true;
+let isSatellite=false;
 
 function toggleMapLayer(){
   const btn=document.getElementById('layerToggle');

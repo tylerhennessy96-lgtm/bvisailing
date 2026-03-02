@@ -29,7 +29,7 @@ html,body{height:100%;height:-webkit-fill-available;font-family:'IBM Plex Sans',
 .live-badge.future{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:var(--text-secondary)}.live-badge.future::before{background:var(--text-secondary);animation:none}
 
 #map-view{position:absolute;top:var(--nav-h);left:0;right:0;bottom:0}
-#map{width:100%;height:100%}.leaflet-tile-pane{filter:saturate(1.1) brightness(1.05)}
+#map{width:100%;height:100%}.leaflet-tile-pane{filter:saturate(1.15) brightness(1.02)}
 
 .tl-panel{position:fixed;bottom:0;left:0;right:0;z-index:900;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--glass-border);padding:14px 20px calc(14px + var(--safe-b));background:var(--wave-bg) repeat,linear-gradient(0deg,rgba(7,25,52,.95),rgba(12,45,90,.93));background-size:120px 20px,100% 100%}
 .tl-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:12px}
@@ -213,7 +213,7 @@ html,body{height:100%;height:-webkit-fill-available;font-family:'IBM Plex Sans',
     <div class="lg-i"><div class="lg-s mp-br" style="width:20px;height:20px;font-size:11px">🍹</div>Bar</div>
     <div class="lg-i"><div class="lg-s mp-lm" style="width:20px;height:20px;font-size:11px">⚓</div>Landmark</div>
   </div>
-  <button class="layer-toggle" id="layerToggle" onclick="toggleMapLayer()" title="Switch to nautical chart"><div class="lt-icon">🗺️</div><div class="lt-lbl">CHART</div></button>
+  <button class="layer-toggle" id="layerToggle" onclick="toggleMapLayer()" title="Switch to satellite imagery"><div class="lt-icon">🛰️</div><div class="lt-lbl">SATELLITE</div></button>
   <button class="drawer-handle" id="drawerHandle" onclick="toggleMobileCard()"><span class="arrow">›</span></button>
   <div class="tl-panel">
     <div class="tl-header">
