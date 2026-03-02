@@ -521,9 +521,24 @@ function buildFlights(){
     else counts.scheduled++;
   });
 
+  // Format current time for "last updated"
+  const now=new Date();
+  const mon=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][now.getMonth()];
+  const hr=now.getHours()%12||12,ampm=now.getHours()>=12?'PM':'AM';
+  const mins=String(now.getMinutes()).padStart(2,'0');
+  const updatedStr=`${mon} ${now.getDate()}, ${hr}:${mins} ${ampm}`;
+
   let h=`<div class="fl-header">
     <h1>Flight Tracker</h1>
     <div class="sub">10 crew · March 7–15, 2026</div>
+  </div>`;
+
+  // Last updated bar
+  h+=`<div class="fl-updated">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+    <span>Status as of ${updatedStr}</span>
+    <span>·</span>
+    <span>Next refresh in 3 hours</span>
   </div>`;
 
   // Summary bar
