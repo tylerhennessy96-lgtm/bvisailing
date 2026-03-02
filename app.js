@@ -368,16 +368,21 @@ document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowD
 // ━━━ VIEW SWITCH ━━━
 function showView(v){
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('map-view').style.display='none';
+  document.getElementById('itin-view').style.display='none';
+  document.getElementById('flights-view').style.display='none';
   if(v==='map'){
     document.getElementById('map-view').style.display='block';
-    document.getElementById('itin-view').style.display='none';
     document.querySelectorAll('.nav-tab')[0].classList.add('active');
     setTimeout(()=>map.invalidateSize(),100);
-  }else{
-    document.getElementById('map-view').style.display='none';
+  }else if(v==='itinerary'){
     document.getElementById('itin-view').style.display='block';
     document.querySelectorAll('.nav-tab')[1].classList.add('active');
     buildItin();
+  }else if(v==='flights'){
+    document.getElementById('flights-view').style.display='block';
+    document.querySelectorAll('.nav-tab')[2].classList.add('active');
+    buildFlights();
   }
 }
 
@@ -461,6 +466,78 @@ function buildItin(){
   c.innerHTML=h;
 
   if(ts==='during'){const el=document.getElementById('itin-today');if(el)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),300)}
+}
+
+// ━━━ FLIGHTS PAGE ━━━
+let flightsBuilt=false;
+function buildFlights(){
+  if(flightsBuilt)return;flightsBuilt=true;
+  const c=document.getElementById('flightsC');
+
+  function flightCard(airline,flightNum,fromIATA,fromCity,toIATA,toCity,depTime){
+    return `<div class="fl-card">
+      <div class="fl-airline">
+        <div class="fl-airline-code"><span class="fl-plane">✈</span> ${airline}</div>
+        <div class="fl-flight-num">${flightNum}</div>
+        <div class="fl-status">Scheduled</div>
+      </div>
+      <div class="fl-route">
+        <div class="fl-airport">
+          <div class="fl-iata">${fromIATA}</div>
+          <div class="fl-city">${fromCity}</div>
+          <div class="fl-time">${depTime}</div>
+        </div>
+        <div class="fl-connector">
+          <div class="fl-conn-line"></div>
+          <div class="fl-conn-label">DIRECT</div>
+        </div>
+        <div class="fl-airport">
+          <div class="fl-iata">${toIATA}</div>
+          <div class="fl-city">${toCity}</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function layover(airport,duration){
+    return `<div class="fl-layover">
+      <div class="fl-layover-badge">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        ${duration} layover in ${airport}
+      </div>
+    </div>`;
+  }
+
+  let h=`<div class="fl-header">
+    <h1>Flight Tracker</h1>
+    <div class="sub">London to Tortola and back</div>
+  </div>`;
+
+  // Outbound
+  h+=`<div class="fl-section">
+    <div class="fl-section-hdr">
+      <div class="fl-section-dir out">OUTBOUND</div>
+      <div class="fl-section-date">Saturday, March 7, 2026</div>
+    </div>
+    ${flightCard('British Airways','BA207','LHR','London Heathrow','MIA','Miami','9:45 AM')}
+    ${layover('MIA','~8h 30m')}
+    ${flightCard('AA / Envoy','AA3947','MIA','Miami','EIS','Tortola','6:15 PM')}
+  </div>`;
+
+  // Return
+  h+=`<div class="fl-section">
+    <div class="fl-section-hdr">
+      <div class="fl-section-dir ret">RETURN</div>
+      <div class="fl-section-date">Sunday, March 15, 2026</div>
+    </div>
+    ${flightCard('AA / Envoy','AA3946','EIS','Tortola','MIA','Miami','12:50 PM')}
+    ${layover('MIA','~5h 20m')}
+    ${flightCard('British Airways','BA206','MIA','Miami','LHR','London Heathrow','6:10 PM')}
+  </div>`;
+
+  h+=`<div class="fl-note">Other guests' flights coming soon</div>`;
+
+  c.innerHTML=h;
 }
 
 // ━━━ LEGEND POSITIONING (below weather card) ━━━
