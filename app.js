@@ -469,73 +469,122 @@ function buildItin(){
 }
 
 // ━━━ FLIGHTS PAGE ━━━
+const PASSENGERS=[
+  {id:'tyler',name:'Tyler',status:'on_time',outbound:[
+    {airline:'British Airways',flight:'BA207',from:'LHR',to:'MIA',dep:'9:45 AM',date:'Sat Mar 7',status:'on_time'},
+    {layover:'~8h 30m in MIA'},
+    {airline:'AA / Envoy',flight:'AA3947',from:'MIA',to:'EIS',dep:'6:15 PM',date:'Sat Mar 7',status:'on_time'}
+  ],ret:[
+    {airline:'AA / Envoy',flight:'AA3946',from:'EIS',to:'MIA',dep:'12:50 PM',date:'Sun Mar 15',status:'on_time'},
+    {layover:'~5h 20m in MIA'},
+    {airline:'British Airways',flight:'BA206',from:'MIA',to:'LHR',dep:'6:10 PM',date:'Sun Mar 15',status:'on_time'}
+  ]},
+  {id:'guest2',name:'Guest 2',status:'scheduled',outbound:[{airline:'TBD',flight:'—',from:'TBD',to:'EIS',dep:'TBD',date:'Mar 7',status:'scheduled'}],ret:[{airline:'TBD',flight:'—',from:'EIS',to:'TBD',dep:'TBD',date:'Mar 15',status:'scheduled'}]},
+  {id:'guest3',name:'Guest 3',status:'scheduled',outbound:[{airline:'TBD',flight:'—',from:'TBD',to:'EIS',dep:'TBD',date:'Mar 7',status:'scheduled'}],ret:[{airline:'TBD',flight:'—',from:'EIS',to:'TBD',dep:'TBD',date:'Mar 15',status:'scheduled'}]},
+  {id:'guest4',name:'Guest 4',status:'scheduled',outbound:[{airline:'TBD',flight:'—',from:'TBD',to:'EIS',dep:'TBD',date:'Mar 7',status:'scheduled'}],ret:[{airline:'TBD',flight:'—',from:'EIS',to:'TBD',dep:'TBD',date:'Mar 15',status:'scheduled'}]},
+  {id:'guest5',name:'Guest 5',status:'scheduled',outbound:[{airline:'TBD',flight:'—',from:'TBD',to:'EIS',dep:'TBD',date:'Mar 7',status:'scheduled'}],ret:[{airline:'TBD',flight:'—',from:'EIS',to:'TBD',dep:'TBD',date:'Mar 15',status:'scheduled'}]},
+  {id:'guest6',name:'Guest 6',status:'scheduled',outbound:[{airline:'TBD',flight:'—',from:'TBD',to:'EIS',dep:'TBD',date:'Mar 7',status:'scheduled'}],ret:[{airline:'TBD',flight:'—',from:'EIS',to:'TBD',dep:'TBD',date:'Mar 15',status:'scheduled'}]},
+  {id:'guest7',name:'Guest 7',status:'scheduled',outbound:[{airline:'TBD',flight:'—',from:'TBD',to:'EIS',dep:'TBD',date:'Mar 7',status:'scheduled'}],ret:[{airline:'TBD',flight:'—',from:'EIS',to:'TBD',dep:'TBD',date:'Mar 15',status:'scheduled'}]},
+  {id:'guest8',name:'Guest 8',status:'scheduled',outbound:[{airline:'TBD',flight:'—',from:'TBD',to:'EIS',dep:'TBD',date:'Mar 7',status:'scheduled'}],ret:[{airline:'TBD',flight:'—',from:'EIS',to:'TBD',dep:'TBD',date:'Mar 15',status:'scheduled'}]},
+  {id:'guest9',name:'Guest 9',status:'scheduled',outbound:[{airline:'TBD',flight:'—',from:'TBD',to:'EIS',dep:'TBD',date:'Mar 7',status:'scheduled'}],ret:[{airline:'TBD',flight:'—',from:'EIS',to:'TBD',dep:'TBD',date:'Mar 15',status:'scheduled'}]},
+  {id:'guest10',name:'Guest 10',status:'scheduled',outbound:[{airline:'TBD',flight:'—',from:'TBD',to:'EIS',dep:'TBD',date:'Mar 7',status:'scheduled'}],ret:[{airline:'TBD',flight:'—',from:'EIS',to:'TBD',dep:'TBD',date:'Mar 15',status:'scheduled'}]}
+];
+
+function statusColor(s){return s==='on_time'?'green':s==='delayed'||s==='cancelled'||s==='diverted'?'red':'grey'}
+function statusLabel(s){return s==='on_time'?'On Time':s==='delayed'?'Delayed':s==='cancelled'?'Cancelled':s==='diverted'?'Diverted':'Scheduled'}
+function statusPriority(s){return s==='delayed'||s==='cancelled'||s==='diverted'?0:s==='on_time'?1:2}
+
+function togglePassenger(id){
+  document.getElementById('fp-'+id).classList.toggle('expanded');
+}
+
+function nextFlightSummary(p){
+  const legs=[...p.outbound,...p.ret].filter(l=>!l.layover);
+  const first=legs[0];
+  if(!first)return 'No flights';
+  return `${first.flight} ${first.from}→${first.to} ${first.dep}`;
+}
+
 let flightsBuilt=false;
 function buildFlights(){
   if(flightsBuilt)return;flightsBuilt=true;
   const c=document.getElementById('flightsC');
 
-  function flightCard(airline,flightNum,fromIATA,fromCity,toIATA,toCity,depTime){
-    return `<div class="fl-card">
-      <div class="fl-airline">
-        <div class="fl-airline-code"><span class="fl-plane">✈</span> ${airline}</div>
-        <div class="fl-flight-num">${flightNum}</div>
-        <div class="fl-status">Scheduled</div>
-      </div>
-      <div class="fl-route">
-        <div class="fl-airport">
-          <div class="fl-iata">${fromIATA}</div>
-          <div class="fl-city">${fromCity}</div>
-          <div class="fl-time">${depTime}</div>
-        </div>
-        <div class="fl-connector">
-          <div class="fl-conn-line"></div>
-          <div class="fl-conn-label">DIRECT</div>
-        </div>
-        <div class="fl-airport">
-          <div class="fl-iata">${toIATA}</div>
-          <div class="fl-city">${toCity}</div>
-        </div>
-      </div>
-    </div>`;
-  }
+  // Sort by urgency: red (problems) → green (on time) → grey (scheduled)
+  const sorted=[...PASSENGERS].sort((a,b)=>statusPriority(a.status)-statusPriority(b.status));
 
-  function layover(airport,duration){
-    return `<div class="fl-layover">
-      <div class="fl-layover-badge">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-        ${duration} layover in ${airport}
-      </div>
-    </div>`;
-  }
+  // Summary counts
+  const counts={on_time:0,problem:0,scheduled:0};
+  PASSENGERS.forEach(p=>{
+    if(p.status==='on_time')counts.on_time++;
+    else if(p.status==='delayed'||p.status==='cancelled'||p.status==='diverted')counts.problem++;
+    else counts.scheduled++;
+  });
 
   let h=`<div class="fl-header">
     <h1>Flight Tracker</h1>
-    <div class="sub">London to Tortola and back</div>
+    <div class="sub">10 crew · March 7–15, 2026</div>
   </div>`;
 
-  // Outbound
-  h+=`<div class="fl-section">
-    <div class="fl-section-hdr">
-      <div class="fl-section-dir out">OUTBOUND</div>
-      <div class="fl-section-date">Saturday, March 7, 2026</div>
-    </div>
-    ${flightCard('British Airways','BA207','LHR','London Heathrow','MIA','Miami','9:45 AM')}
-    ${layover('MIA','~8h 30m')}
-    ${flightCard('AA / Envoy','AA3947','MIA','Miami','EIS','Tortola','6:15 PM')}
-  </div>`;
+  // Summary bar
+  h+=`<div class="fl-summary">`;
+  if(counts.on_time)h+=`<div class="fl-summary-item"><div class="fl-dot green"></div>${counts.on_time} on time</div>`;
+  if(counts.problem)h+=`<div class="fl-summary-item"><div class="fl-dot red"></div>${counts.problem} delayed</div>`;
+  if(counts.scheduled)h+=`<div class="fl-summary-item"><div class="fl-dot grey"></div>${counts.scheduled} scheduled</div>`;
+  h+=`</div>`;
 
-  // Return
-  h+=`<div class="fl-section">
-    <div class="fl-section-hdr">
-      <div class="fl-section-dir ret">RETURN</div>
-      <div class="fl-section-date">Sunday, March 15, 2026</div>
-    </div>
-    ${flightCard('AA / Envoy','AA3946','EIS','Tortola','MIA','Miami','12:50 PM')}
-    ${layover('MIA','~5h 20m')}
-    ${flightCard('British Airways','BA206','MIA','Miami','LHR','London Heathrow','6:10 PM')}
-  </div>`;
+  // Passenger accordion rows
+  sorted.forEach(p=>{
+    const col=statusColor(p.status);
+    const summary=nextFlightSummary(p);
 
-  h+=`<div class="fl-note">Other guests' flights coming soon</div>`;
+    h+=`<div class="fl-person" id="fp-${p.id}">
+      <div class="fl-person-hdr" onclick="togglePassenger('${p.id}')">
+        <div class="fl-person-dot ${col}"></div>
+        <div class="fl-person-name">${p.name}</div>
+        <div class="fl-person-summary">${summary}</div>
+        <div class="fl-person-chevron">›</div>
+      </div>
+      <div class="fl-person-detail">`;
+
+    // Outbound legs
+    h+=`<div class="fl-leg-group"><div class="fl-leg-label">OUTBOUND — ${p.outbound[0]?.date||'TBD'}</div>`;
+    p.outbound.forEach(leg=>{
+      if(leg.layover){
+        h+=`<div class="fl-layover-mini">⏱ ${leg.layover}</div>`;
+      }else{
+        const lc=statusColor(leg.status);
+        h+=`<div class="fl-leg">
+          <div class="fl-leg-plane">✈</div>
+          <div class="fl-leg-info">
+            <div class="fl-leg-route">${leg.from} → ${leg.to}</div>
+            <div class="fl-leg-meta"><span>${leg.airline}</span><span>${leg.flight}</span><span>${leg.dep}</span></div>
+          </div>
+          <div class="fl-leg-status ${lc}">${statusLabel(leg.status)}</div>
+        </div>`;
+      }
+    });
+    h+=`</div>`;
+
+    // Return legs
+    h+=`<div class="fl-leg-group"><div class="fl-leg-label">RETURN — ${p.ret[0]?.date||'TBD'}</div>`;
+    p.ret.forEach(leg=>{
+      if(leg.layover){
+        h+=`<div class="fl-layover-mini">⏱ ${leg.layover}</div>`;
+      }else{
+        const lc=statusColor(leg.status);
+        h+=`<div class="fl-leg">
+          <div class="fl-leg-plane">✈</div>
+          <div class="fl-leg-info">
+            <div class="fl-leg-route">${leg.from} → ${leg.to}</div>
+            <div class="fl-leg-meta"><span>${leg.airline}</span><span>${leg.flight}</span><span>${leg.dep}</span></div>
+          </div>
+          <div class="fl-leg-status ${lc}">${statusLabel(leg.status)}</div>
+        </div>`;
+      }
+    });
+    h+=`</div></div></div>`;
+  });
 
   c.innerHTML=h;
 }
