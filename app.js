@@ -106,9 +106,50 @@ function tripStatus(){
 }
 const todayIdx=getTodayIdx();
 
-// ━━━ MAP (maxZoom capped at 13, zoom control bottom-right) ━━━
+// ━━━ MOON PHASE CALCULATOR ━━━
+function getMoonPhase(isoDate){
+  const [y,m,d]=isoDate.split('-').map(Number);
+  // Reference: New Moon ~Feb 28, 2026 00:45 UTC (preceding the March 14 full moon)
+  const refNewMoon=Date.UTC(2026,1,28,0,45);
+  const SYNODIC=29.530588853;
+  // Use 20:00 UTC (~8pm Caribbean evening, prime moon viewing)
+  const dateMs=Date.UTC(y,m-1,d,20,0);
+  const daysSinceNew=(dateMs-refNewMoon)/86400000;
+  let age=daysSinceNew%SYNODIC;
+  if(age<0)age+=SYNODIC;
+  const illum=(1-Math.cos(2*Math.PI*age/SYNODIC))/2;
+  const pct=Math.round(illum*100);
+  // 8-phase system: each phase spans 1/8 of the synodic month
+  const norm=age/SYNODIC;
+  let idx;
+  if(norm<0.0625)idx=0;       // New Moon
+  else if(norm<0.1875)idx=1;  // Waxing Crescent
+  else if(norm<0.3125)idx=2;  // First Quarter
+  else if(norm<0.4375)idx=3;  // Waxing Gibbous
+  else if(norm<0.5625)idx=4;  // Full Moon
+  else if(norm<0.6875)idx=5;  // Waning Gibbous
+  else if(norm<0.8125)idx=6;  // Third Quarter
+  else if(norm<0.9375)idx=7;  // Waning Crescent
+  else idx=0;                  // New Moon (end of cycle)
+  const phases=[
+    {emoji:'🌑',name:'New Moon'},
+    {emoji:'🌒',name:'Waxing Crescent'},
+    {emoji:'🌓',name:'First Quarter'},
+    {emoji:'🌔',name:'Waxing Gibbous'},
+    {emoji:'🌕',name:'Full Moon'},
+    {emoji:'🌖',name:'Waning Gibbous'},
+    {emoji:'🌗',name:'Third Quarter'},
+    {emoji:'🌘',name:'Waning Crescent'}
+  ];
+  return {...phases[idx],illumination:pct,age:Math.round(age*10)/10};
+}
+
+// Inject moon phase data into each day
+DAYS.forEach(d=>{d.wx.moon=getMoonPhase(d.iso)});
+
+// ━━━ MAP (maxZoom capped at 13, zoom control top-right below legend) ━━━
 const map=L.map('map',{center:[18.50,-64.55],zoom:11,zoomControl:false,maxZoom:13});
-L.control.zoom({position:'bottomright'}).addTo(map);
+L.control.zoom({position:'topright'}).addTo(map);
 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}',{
   attribution:'Tiles &copy; Esri &mdash; GEBCO, NOAA, National Geographic',
   maxZoom:13
@@ -201,6 +242,7 @@ function setDay(idx){
   else if(ts==='before'){
     const today=todayLocal(),start=parseLocalDate(DAYS[0].iso);
     const dl=Math.ceil((start-today)/864e5);
+    console.log('[Countdown Debug]','today:',today.toISOString(),'start:',start.toISOString(),'diff ms:',(start-today),'days:',dl);
     badge=`<span class="live-badge future">${dl}d to go</span>`;
   }
   document.getElementById('tlLabel').innerHTML=`Day ${d.day} · ${d.title} ${badge} <span class="ds">${d.date}</span>`;
@@ -211,7 +253,8 @@ function setDay(idx){
     <div class="wind-arr" style="transform:rotate(${d.wx.deg+180}deg)" title="From ${d.wx.dir}"><svg viewBox="0 0 24 24"><path d="M12 2l6 10H6z"/></svg></div>
     <div class="wx-chip">${d.wx.dir}</div>
     <div class="wx-chip"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>${d.wx.temp}</div>
-    <div class="wx-chip" style="color:var(--teal)">${d.wx.seas}</div>`;
+    <div class="wx-chip" style="color:var(--teal)">${d.wx.seas}</div>
+    <div class="wx-chip" style="color:var(--sand-muted)">${d.wx.moon.emoji} ${d.wx.moon.illumination}%</div>`;
   updateWxCard(d.wx);
   wUpdate(d.wx);
 
@@ -250,6 +293,12 @@ function updateCard(d,isToday){
     <div class="dc-title">${d.title}</div>
     <div class="dc-route">${d.route} <span class="nm">${d.nm}</span></div>
     <div class="dc-desc">${d.desc}</div>
+    <div class="dc-sec"><div class="dc-sec-t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>Tonight's Moon</div>
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;background:rgba(201,168,76,.03);border:1px solid rgba(201,168,76,.04)">
+        <span style="font-size:26px;line-height:1">${d.wx.moon.emoji}</span>
+        <div><div style="font-size:12px;font-weight:500;color:var(--sand)">${d.wx.moon.name}</div><div style="font-size:10px;color:var(--text-secondary);font-family:'JetBrains Mono',monospace">${d.wx.moon.illumination}% illuminated</div></div>
+      </div>
+    </div>
     <div class="dc-sec"><div class="dc-sec-t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Points of Interest</div><div class="poi-list">${pois}</div></div>
     <div class="tip-box"><strong>Tips</strong><ul class="tip-list">${d.tips.map(t=>`<li>${t}</li>`).join('')}</ul></div>`;
 }
@@ -306,6 +355,7 @@ function buildItin(){
   if(ts==='before'){
     const today=todayLocal(),start=parseLocalDate(DAYS[0].iso);
     const dl=Math.ceil((start-today)/864e5);
+    console.log('[Itinerary Countdown]','today:',today.toISOString(),'start:',start.toISOString(),'diff ms:',(start-today),'days:',dl);
     sn=`<div style="margin-top:12px"><span class="live-badge future" style="font-size:11px">${dl} days until departure</span></div>`;
   }
   else if(ts==='during')sn=`<div style="margin-top:12px"><span class="live-badge" style="font-size:11px">Trip in progress — Day ${DAYS[todayIdx].day}</span></div>`;
@@ -322,6 +372,7 @@ function buildItin(){
         <span class="id-wx-chip">💨 ${d.wx.wind} ${d.wx.dir}</span>
         <span class="id-wx-chip">🌡 ${d.wx.temp}</span>
         <span class="id-wx-chip">🌊 ${d.wx.seas}</span>
+        <span class="id-wx-chip">${d.wx.moon.emoji} ${d.wx.moon.name} · ${d.wx.moon.illumination}%</span>
       </div>
       <div class="id-body"><p>${d.desc}</p></div>
       <div class="id-tips"><h4>Tips & Notes</h4><ul>${d.tips.map(t=>`<li>${t}</li>`).join('')}</ul></div>
@@ -384,6 +435,11 @@ function positionLegend(){
   if(!wxCard||!legend||isMob())return;
   const wxRect=wxCard.getBoundingClientRect();
   legend.style.top=(wxRect.bottom+12)+'px';
+  // Position zoom control below legend
+  const legendRect=legend.getBoundingClientRect();
+  const mapRect=document.getElementById('map').getBoundingClientRect();
+  const zoomCtrl=document.querySelector('.leaflet-top.leaflet-right .leaflet-control-zoom');
+  if(zoomCtrl)zoomCtrl.style.marginTop=(legendRect.bottom-mapRect.top+12)+'px';
 }
 
 // ━━━ RESIZE ━━━
