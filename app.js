@@ -155,6 +155,10 @@ L.control.zoom({position:'topright'}).addTo(map);
 const satLayer=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
   attribution:'Tiles &copy; Esri &mdash; Earthstar Geographics',maxZoom:13
 }).addTo(map);
+// Labels overlay for satellite view (CartoDB Voyager labels only)
+const labelsLayer=L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png',{
+  attribution:'Labels &copy; OpenStreetMap &copy; CARTO',maxZoom:13,subdomains:'abcd',pane:'shadowPane'
+}).addTo(map);
 const oceanBase=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}',{
   attribution:'Tiles &copy; Esri &mdash; GEBCO, NOAA, National Geographic',maxZoom:13
 });
@@ -167,6 +171,7 @@ function toggleMapLayer(){
   const btn=document.getElementById('layerToggle');
   if(isSatellite){
     map.removeLayer(satLayer);
+    map.removeLayer(labelsLayer);
     oceanBase.addTo(map);oceanRef.addTo(map);
     oceanBase.bringToBack();
     btn.innerHTML='<div class="lt-icon">🛰️</div><div class="lt-lbl">SATELLITE</div>';
@@ -176,6 +181,7 @@ function toggleMapLayer(){
     map.removeLayer(oceanBase);map.removeLayer(oceanRef);
     satLayer.addTo(map);
     satLayer.bringToBack();
+    labelsLayer.addTo(map);
     btn.innerHTML='<div class="lt-icon">🗺️</div><div class="lt-lbl">CHART</div>';
     btn.title='Switch to nautical chart';
     document.querySelector('.leaflet-tile-pane').style.filter='saturate(1.1) brightness(1.05)';
