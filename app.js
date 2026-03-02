@@ -98,10 +98,13 @@ function tripStatus(){
 const todayIdx=getTodayIdx();
 
 // ━━━ MAP ━━━
-const map=L.map('map',{center:[18.50,-64.55],zoom:11,zoomControl:true});
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
-  attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
-  subdomains:'abcd',maxZoom:19
+const map=L.map('map',{center:[18.50,-64.55],zoom:11,zoomControl:true,maxZoom:16});
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}',{
+  attribution:'Tiles &copy; Esri &mdash; GEBCO, NOAA, National Geographic',
+  maxZoom:16
+}).addTo(map);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Reference/MapServer/tile/{z}/{y}/{x}',{
+  attribution:'',maxZoom:16
 }).addTo(map);
 
 // Full route (faded)
@@ -165,12 +168,12 @@ function setDay(idx){
   else if(ts==='before'){const dl=Math.ceil((new Date(DAYS[0].iso)-new Date())/864e5);badge=`<span class="live-badge future">${dl}d to go</span>`}
   document.getElementById('tlLabel').innerHTML=`Day ${d.day} · ${d.title} ${badge} <span class="ds">${d.date}</span>`;
 
-  // Weather
+  // Weather chips (timeline)
   document.getElementById('tlWx').innerHTML=`
-    <div class="wx-chip"><svg viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg><span style="color:var(--wind-blue)">${d.wx.wind}</span></div>
+    <div class="wx-chip"><svg viewBox="0 0 24 24" fill="none" stroke="var(--wind-blue)" stroke-width="2" stroke-linecap="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg><span style="color:var(--wind-blue)">${d.wx.wind}</span></div>
     <div class="wind-arr" style="transform:rotate(${d.wx.deg+180}deg)" title="From ${d.wx.dir}"><svg viewBox="0 0 24 24"><path d="M12 2l6 10H6z"/></svg></div>
     <div class="wx-chip">${d.wx.dir}</div>
-    <div class="wx-chip"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>${d.wx.temp}</div>
+    <div class="wx-chip"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>${d.wx.temp}</div>
     <div class="wx-chip" style="color:var(--teal)">${d.wx.seas}</div>`;
   updateWxCard(d.wx);
   wUpdate(d.wx);
@@ -314,29 +317,54 @@ function buildItin(){
 // ━━━ RESIZE ━━━
 let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{map.invalidateSize();wResize();if(!isMob())document.getElementById('dayCard').classList.remove('collapsed')},200)});
 
-// ━━━ WEATHER CARD ━━━
+// ━━━ WEATHER CARD (Compass Rose) ━━━
 function updateWxCard(wx){
   const m=wx.wind.match(/(\d+)[–-](\d+)/);
   const lo=m?m[1]:'?',hi=m?m[2]:'?';
+  const deg=wx.deg;
   document.getElementById('wxCard').innerHTML=`
-    <div class="wx-card-wind">
-      <div><div class="wx-card-speed">${lo}<span style="font-size:18px;opacity:.5">–</span>${hi}</div><div class="wx-card-unit">knots</div></div>
-      <div class="wx-card-dir">
-        <div class="wx-card-arrow" style="transform:rotate(${wx.deg+180}deg)"><svg viewBox="0 0 24 24"><path d="M12 2l7 12H5z"/></svg></div>
+    <div class="wx-card-title">WIND</div>
+    <div class="wx-card-main">
+      <div class="wx-card-speed-wrap">
+        <div class="wx-card-speed">${lo}<span class="wx-card-dash">–</span>${hi}</div>
+        <div class="wx-card-unit">knots</div>
+      </div>
+      <div class="wx-card-compass">
+        <svg viewBox="0 0 100 100" class="compass-svg">
+          <circle cx="50" cy="50" r="46" fill="none" stroke="var(--brass)" stroke-width="1.5" opacity=".35"/>
+          <circle cx="50" cy="50" r="42" fill="none" stroke="var(--brass)" stroke-width=".5" opacity=".2"/>
+          <line x1="50" y1="4" x2="50" y2="12" stroke="var(--brass-light)" stroke-width="1.5" opacity=".5"/>
+          <line x1="50" y1="88" x2="50" y2="96" stroke="var(--brass)" stroke-width="1" opacity=".3"/>
+          <line x1="4" y1="50" x2="12" y2="50" stroke="var(--brass)" stroke-width="1" opacity=".3"/>
+          <line x1="88" y1="50" x2="96" y2="50" stroke="var(--brass)" stroke-width="1" opacity=".3"/>
+          <line x1="82" y1="18" x2="78" y2="22" stroke="var(--brass)" stroke-width=".8" opacity=".2"/>
+          <line x1="82" y1="82" x2="78" y2="78" stroke="var(--brass)" stroke-width=".8" opacity=".2"/>
+          <line x1="18" y1="82" x2="22" y2="78" stroke="var(--brass)" stroke-width=".8" opacity=".2"/>
+          <line x1="18" y1="18" x2="22" y2="22" stroke="var(--brass)" stroke-width=".8" opacity=".2"/>
+          <text x="50" y="22" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="600" fill="var(--brass-light)">N</text>
+          <text x="84" y="53.5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="var(--brass)" opacity=".5">E</text>
+          <text x="50" y="86" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="var(--brass)" opacity=".5">S</text>
+          <text x="16" y="53.5" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="var(--brass)" opacity=".5">W</text>
+          <g transform="rotate(${deg} 50 50)">
+            <polygon points="50,18 54,46 46,46" fill="var(--wind-blue)" opacity=".9"/>
+            <polygon points="50,82 54,54 46,54" fill="var(--wind-blue)" opacity=".2"/>
+            <circle cx="50" cy="50" r="3" fill="var(--brass-light)" stroke="var(--brass)" stroke-width=".5"/>
+          </g>
+        </svg>
         <div class="wx-card-dir-lbl">${wx.dir}</div>
       </div>
     </div>
-    <div class="wx-card-rows">
-      <div class="wx-card-row"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg><span class="val">${wx.temp}</span></div>
+    <div class="wx-card-details">
+      <div class="wx-card-row"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg><span class="val">${wx.temp}</span></div>
       <div class="wx-card-row"><svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round"><path d="M2 12c2-4 5-6 10-6s8 2 10 6"/><path d="M2 18c2-4 5-6 10-6s8 2 10 6"/></svg><span class="val">${wx.seas}</span></div>
     </div>`;
 }
 
-// ━━━ WIND PARTICLES ━━━
+// ━━━ WIND PARTICLES (Enhanced) ━━━
 const wCvs=document.getElementById('windCanvas');
 const wCtx=wCvs.getContext('2d');
 let wParts=[],wAng=0,wSpd=15,wFrame=null;
-const W_N=250,W_TL=14;
+const W_N=375,W_TL=20;
 
 function wResize(){
   const dpr=window.devicePixelRatio||1;
@@ -350,7 +378,14 @@ function wResize(){
 function wInitParts(){
   const w=wCvs.width/(window.devicePixelRatio||1),h=wCvs.height/(window.devicePixelRatio||1);
   wParts=[];
-  for(let i=0;i<W_N;i++)wParts.push({x:Math.random()*w,y:Math.random()*h,age:Math.floor(Math.random()*60),mx:40+Math.random()*60,sp:.4+Math.random()*.8,tr:[]});
+  for(let i=0;i<W_N;i++)wParts.push({
+    x:Math.random()*w,y:Math.random()*h,
+    age:Math.floor(Math.random()*80),
+    mx:50+Math.random()*70,
+    sp:.3+Math.random()*1.2,
+    br:.4+Math.random()*.6,
+    tr:[]
+  });
 }
 
 function wUpdate(wx){
@@ -365,7 +400,7 @@ function wAnimate(){
   const w=wCvs.width/dpr,h=wCvs.height/dpr;
   wCtx.clearRect(0,0,w,h);
   const sf=wSpd/15;
-  const vx=Math.sin(wAng)*sf*2,vy=-Math.cos(wAng)*sf*2;
+  const vx=Math.sin(wAng)*sf*2.8,vy=-Math.cos(wAng)*sf*2.8;
 
   for(let i=0;i<wParts.length;i++){
     const p=wParts[i];
@@ -375,24 +410,36 @@ function wAnimate(){
 
     if(p.x<-20||p.x>w+20||p.y<-20||p.y>h+20||p.age>p.mx){
       p.x=Math.random()*w;p.y=Math.random()*h;
-      p.age=0;p.mx=40+Math.random()*60;p.tr=[];
+      p.age=0;p.mx=50+Math.random()*70;p.tr=[];
       continue;
     }
 
     if(p.tr.length>1){
       const life=Math.max(0,1-p.age/p.mx);
+
+      // Trail segments
       for(let j=1;j<p.tr.length;j++){
-        const a=life*(j/p.tr.length)*.45;
+        const a=life*p.br*(j/p.tr.length)*.65;
         wCtx.beginPath();
         wCtx.moveTo(p.tr[j-1].x,p.tr[j-1].y);
         wCtx.lineTo(p.tr[j].x,p.tr[j].y);
-        wCtx.strokeStyle='rgba(59,130,246,'+a+')';
-        wCtx.lineWidth=1.2;
+        wCtx.strokeStyle='rgba(77,184,255,'+a+')';
+        wCtx.lineWidth=1.8;
         wCtx.stroke();
       }
+
+      // Glow halo
+      const ga=life*p.br*.15;
       wCtx.beginPath();
-      wCtx.arc(p.x,p.y,1.3,0,Math.PI*2);
-      wCtx.fillStyle='rgba(59,130,246,'+(life*.7)+')';
+      wCtx.arc(p.x,p.y,5,0,Math.PI*2);
+      wCtx.fillStyle='rgba(77,184,255,'+ga+')';
+      wCtx.fill();
+
+      // Bright head
+      const ha=life*p.br*.85;
+      wCtx.beginPath();
+      wCtx.arc(p.x,p.y,2,0,Math.PI*2);
+      wCtx.fillStyle='rgba(200,230,255,'+ha+')';
       wCtx.fill();
     }
   }
