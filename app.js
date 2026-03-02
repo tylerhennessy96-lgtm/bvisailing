@@ -189,20 +189,24 @@ function toggleMapLayer(){
   isSatellite=!isSatellite;
 }
 
+// ━━━ CUSTOM PANE for routes (above labels overlay z:500, below markers z:600) ━━━
+map.createPane('routes');
+map.getPane('routes').style.zIndex=550;
+
 // ━━━ ROUTE LINES (straight between stops, prominent with glow + tooltips) ━━━
 const allStopCoords=DAYS.map(d=>[d.lat,d.lng]);
 
 // Shadow glow line (wide, faint gold)
-L.polyline(allStopCoords,{color:'#d4a843',weight:12,opacity:0.1,lineCap:'round',lineJoin:'round'}).addTo(map);
+L.polyline(allStopCoords,{color:'#d4a843',weight:12,opacity:0.1,lineCap:'round',lineJoin:'round',pane:'routes'}).addTo(map);
 // Full route line (visible coral)
-L.polyline(allStopCoords,{color:'#ff8a6e',weight:3.5,opacity:0.35,lineCap:'round',lineJoin:'round'}).addTo(map);
+L.polyline(allStopCoords,{color:'#ff8a6e',weight:3.5,opacity:0.35,lineCap:'round',lineJoin:'round',pane:'routes'}).addTo(map);
 
 // Per-leg hit-area polylines with popups (day info, distance, wind, temp)
 const legHitLines=[];
 for(let i=0;i<DAYS.length-1;i++){
   const fromDay=DAYS[i],toDay=DAYS[i+1];
   const seg=[[fromDay.lat,fromDay.lng],[toDay.lat,toDay.lng]];
-  const hitLine=L.polyline(seg,{color:'#ff6b4a',weight:18,opacity:0,interactive:true}).addTo(map);
+  const hitLine=L.polyline(seg,{color:'#ff6b4a',weight:18,opacity:0,interactive:true,pane:'routes'}).addTo(map);
   hitLine.bindPopup(`
     <strong>Day ${fromDay.day} → Day ${toDay.day}</strong><br>
     ${fromDay.label} → ${toDay.label}<br>
@@ -214,27 +218,27 @@ for(let i=0;i<DAYS.length-1;i++){
 }
 
 // Active route (fills per day) - glow + main
-const activeGlow=L.polyline([],{color:'#d4a843',weight:10,opacity:0.15,lineCap:'round',lineJoin:'round'}).addTo(map);
-const activeLine=L.polyline([],{color:'#ff6b4a',weight:4.5,opacity:.9,lineCap:'round',lineJoin:'round'}).addTo(map);
+const activeGlow=L.polyline([],{color:'#d4a843',weight:10,opacity:0.15,lineCap:'round',lineJoin:'round',pane:'routes'}).addTo(map);
+const activeLine=L.polyline([],{color:'#ff6b4a',weight:4.5,opacity:.9,lineCap:'round',lineJoin:'round',pane:'routes'}).addTo(map);
 
-// ━━━ DAY STOP MARKERS ━━━
+// ━━━ DAY STOP MARKERS (high z-index, always on top) ━━━
 const stopMk=[];
 DAYS.forEach((d,i)=>{
-  const ic=L.divIcon({className:'',html:`<div class="ms ${d.day===0?'d0m':''}" id="s${i}">${d.day}</div>`,iconSize:[30,30],iconAnchor:[15,15]});
-  const m=L.marker([d.lat,d.lng],{icon:ic,zIndexOffset:100}).addTo(map);
+  const ic=L.divIcon({className:'',html:`<div class="ms ${d.day===0?'d0m':''}" id="s${i}">${d.day}</div>`,iconSize:[34,34],iconAnchor:[17,17]});
+  const m=L.marker([d.lat,d.lng],{icon:ic,zIndexOffset:1000}).addTo(map);
   m.bindPopup(`<strong>Day ${d.day}: ${d.title}</strong><br>${d.date}<br>${d.nm} · ${d.sail}`);
   m.on('click',()=>setDay(i));
   stopMk.push(m);
 });
 
-// ━━━ POI MARKERS (with hover tooltips) ━━━
+// ━━━ POI MARKERS (with hover tooltips, high z-index) ━━━
 const poiMk=[];
 DAYS.forEach((d,di)=>{
   d.pois.forEach(p=>{
     const tc=p.type==='snorkel'?'mp-sn':p.type==='bar'?'mp-br':p.type==='restaurant'?'mp-rs':'mp-lm';
-    const ic=L.divIcon({className:'',html:`<div class="mp ${tc}">${p.icon}</div>`,iconSize:[24,24],iconAnchor:[12,12]});
-    const m=L.marker([p.lat,p.lng],{icon:ic,zIndexOffset:50}).addTo(map);
-    m.bindTooltip(`<strong>${p.name}</strong><br>${p.note}`,{direction:'top',offset:[0,-8]});
+    const ic=L.divIcon({className:'',html:`<div class="mp ${tc}">${p.icon}</div>`,iconSize:[28,28],iconAnchor:[14,14]});
+    const m=L.marker([p.lat,p.lng],{icon:ic,zIndexOffset:500}).addTo(map);
+    m.bindTooltip(`<strong>${p.name}</strong><br>${p.note}`,{direction:'top',offset:[0,-10]});
     m.bindPopup(`<strong>${p.name}</strong><br>${p.note}<br><em>Day ${d.day}</em>`);
     m.di=di;poiMk.push(m);
   });
