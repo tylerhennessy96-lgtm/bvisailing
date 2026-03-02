@@ -432,13 +432,22 @@ function buildItin(){
 function positionLegend(){
   const wxCard=document.getElementById('wxCard');
   const legend=document.getElementById('legendCard');
-  if(!wxCard||!legend||isMob())return;
+  const mapRect=document.getElementById('map').getBoundingClientRect();
+  const zoomCtrl=document.querySelector('.leaflet-top.leaflet-right .leaflet-control-zoom');
+  if(!wxCard)return;
+  if(isMob()){
+    // On mobile: position zoom below wx card
+    if(zoomCtrl){
+      const wxRect=wxCard.getBoundingClientRect();
+      zoomCtrl.style.marginTop=(wxRect.bottom-mapRect.top+8)+'px';
+    }
+    return;
+  }
+  if(!legend)return;
   const wxRect=wxCard.getBoundingClientRect();
   legend.style.top=(wxRect.bottom+12)+'px';
   // Position zoom control below legend
   const legendRect=legend.getBoundingClientRect();
-  const mapRect=document.getElementById('map').getBoundingClientRect();
-  const zoomCtrl=document.querySelector('.leaflet-top.leaflet-right .leaflet-control-zoom');
   if(zoomCtrl)zoomCtrl.style.marginTop=(legendRect.bottom-mapRect.top+12)+'px';
 }
 
@@ -485,6 +494,7 @@ function updateWxCard(wx){
     <div class="wx-card-details">
       <div class="wx-card-row"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg><span class="val">${wx.temp}</span></div>
       <div class="wx-card-row"><svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round"><path d="M2 12c2-4 5-6 10-6s8 2 10 6"/><path d="M2 18c2-4 5-6 10-6s8 2 10 6"/></svg><span class="val">${wx.seas}</span></div>
+      <div class="wx-card-row"><span style="font-size:16px;line-height:1">${wx.moon.emoji}</span><span class="val">${wx.moon.name} · ${wx.moon.illumination}%</span></div>
     </div>`;
   // Reposition legend after wx card renders
   requestAnimationFrame(positionLegend);
