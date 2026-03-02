@@ -82,26 +82,6 @@ pois:[{name:'The Moorings Yacht Club',type:'landmark',lat:18.4268,lng:-64.6165,i
 wx:{wind:'15–18 kts',dir:'ENE',deg:72,temp:'83°F',seas:'1–2 ft'}}
 ];
 
-// ━━━ ROUTE WAYPOINTS (realistic sailing paths around islands) ━━━
-const ROUTES=[
-  // Leg 0: Road Town → Norman Island (south through Sir Francis Drake Channel)
-  [[18.4268,-64.6165],[18.4100,-64.6180],[18.3700,-64.6170],[18.3400,-64.6185],[18.3195,-64.6189]],
-  // Leg 1: Norman → Cooper (NE through channel, past Salt & Peter Islands)
-  [[18.3195,-64.6189],[18.3250,-64.5950],[18.3400,-64.5700],[18.3600,-64.5400],[18.3830,-64.5120]],
-  // Leg 2: Cooper → Virgin Gorda (east past Ginger, round south VG)
-  [[18.3830,-64.5120],[18.3900,-64.4800],[18.3950,-64.4500],[18.4100,-64.4200],[18.4200,-64.3900],[18.4400,-64.3700],[18.4700,-64.3550],[18.4900,-64.3550]],
-  // Leg 3: North Sound → Anegada (north over open water)
-  [[18.4900,-64.3550],[18.5200,-64.3500],[18.5800,-64.3450],[18.6500,-64.3400],[18.7270,-64.3350]],
-  // Leg 4: Anegada → Trellis Bay (south past Necker, round east Tortola)
-  [[18.7270,-64.3350],[18.6500,-64.3500],[18.5700,-64.3900],[18.5200,-64.4400],[18.4800,-64.4800],[18.4600,-64.5100],[18.4430,-64.5320]],
-  // Leg 5: Trellis Bay → White Bay JVD (west along north coast, round west)
-  [[18.4430,-64.5320],[18.4200,-64.5400],[18.3900,-64.5600],[18.3700,-64.6000],[18.3600,-64.6400],[18.3500,-64.6800],[18.3700,-64.7100],[18.4000,-64.7300],[18.4200,-64.7500],[18.4380,-64.7530]],
-  // Leg 6: White Bay → Great Harbour (short hop around point)
-  [[18.4380,-64.7530],[18.4420,-64.7580],[18.4450,-64.7650],[18.4480,-64.7680]],
-  // Leg 7: JVD → Road Town (east through channel back home)
-  [[18.4480,-64.7680],[18.4300,-64.7500],[18.4100,-64.7300],[18.3900,-64.7000],[18.3700,-64.6600],[18.3800,-64.6300],[18.4000,-64.6200],[18.4268,-64.6165]]
-];
-
 // ━━━ DATE AWARENESS (timezone-safe) ━━━
 function parseLocalDate(iso){
   const [y,m,d]=iso.split('-').map(Number);
@@ -126,8 +106,9 @@ function tripStatus(){
 }
 const todayIdx=getTodayIdx();
 
-// ━━━ MAP (maxZoom capped at 13) ━━━
-const map=L.map('map',{center:[18.50,-64.55],zoom:11,zoomControl:true,maxZoom:13});
+// ━━━ MAP (maxZoom capped at 13, zoom control bottom-right) ━━━
+const map=L.map('map',{center:[18.50,-64.55],zoom:11,zoomControl:false,maxZoom:13});
+L.control.zoom({position:'bottomright'}).addTo(map);
 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}',{
   attribution:'Tiles &copy; Esri &mdash; GEBCO, NOAA, National Geographic',
   maxZoom:13
@@ -136,36 +117,32 @@ L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Oc
   attribution:'',maxZoom:13
 }).addTo(map);
 
-// ━━━ ROUTE LINES (waypoint-based with glow) ━━━
-// Full route: all waypoints chained, faded glow underline
-const allWaypoints=ROUTES.reduce((acc,leg)=>{
-  if(acc.length===0)return leg.slice();
-  return acc.concat(leg.slice(1));
-},[]);
+// ━━━ ROUTE LINES (straight between stops, prominent with glow + tooltips) ━━━
+const allStopCoords=DAYS.map(d=>[d.lat,d.lng]);
 
-// Shadow glow line (wide, faint)
-L.polyline(allWaypoints,{color:'#d4a843',weight:12,opacity:0.08,lineCap:'round',lineJoin:'round'}).addTo(map);
-// Faded full route dashes
-L.polyline(allWaypoints,{color:'#ff8a6e',weight:2.5,opacity:0.2,dashArray:'6,10',lineCap:'round'}).addTo(map);
+// Shadow glow line (wide, faint gold)
+L.polyline(allStopCoords,{color:'#d4a843',weight:12,opacity:0.1,lineCap:'round',lineJoin:'round'}).addTo(map);
+// Full route line (visible coral)
+L.polyline(allStopCoords,{color:'#ff8a6e',weight:3.5,opacity:0.35,lineCap:'round',lineJoin:'round'}).addTo(map);
 
-// Per-leg invisible hit-area polylines with tooltips/popups
+// Per-leg hit-area polylines with popups (day info, distance, wind, temp)
 const legHitLines=[];
-ROUTES.forEach((leg,i)=>{
+for(let i=0;i<DAYS.length-1;i++){
   const fromDay=DAYS[i],toDay=DAYS[i+1];
-  if(!toDay)return;
-  const hitLine=L.polyline(leg,{color:'#ff6b4a',weight:14,opacity:0,interactive:true}).addTo(map);
+  const seg=[[fromDay.lat,fromDay.lng],[toDay.lat,toDay.lng]];
+  const hitLine=L.polyline(seg,{color:'#ff6b4a',weight:18,opacity:0,interactive:true}).addTo(map);
   hitLine.bindPopup(`
     <strong>Day ${fromDay.day} → Day ${toDay.day}</strong><br>
     ${fromDay.label} → ${toDay.label}<br>
     <span style="color:var(--teal)">${toDay.nm}</span> · ${toDay.sail}<br>
-    <span style="color:var(--wind-blue)">Wind: ${toDay.wx.wind} ${toDay.wx.dir}</span><br>
-    <span style="color:var(--gold)">Seas: ${toDay.wx.seas}</span>
+    <span style="color:var(--wind-blue)">Wind: ${toDay.wx.wind} ${toDay.wx.dir}</span> · <span style="color:var(--gold)">${toDay.wx.temp}</span><br>
+    <span style="color:var(--teal)">Seas: ${toDay.wx.seas}</span>
   `);
   legHitLines.push(hitLine);
-});
+}
 
 // Active route (fills per day) - glow + main
-const activeGlow=L.polyline([],{color:'#d4a843',weight:10,opacity:0.12,lineCap:'round',lineJoin:'round'}).addTo(map);
+const activeGlow=L.polyline([],{color:'#d4a843',weight:10,opacity:0.15,lineCap:'round',lineJoin:'round'}).addTo(map);
 const activeLine=L.polyline([],{color:'#ff6b4a',weight:4.5,opacity:.9,lineCap:'round',lineJoin:'round'}).addTo(map);
 
 // ━━━ DAY STOP MARKERS ━━━
@@ -242,18 +219,13 @@ function setDay(idx){
   document.getElementById('prevBtn').disabled=idx===0;
   document.getElementById('nextBtn').disabled=idx===DAYS.length-1;
 
-  // Active route line (waypoint-based)
-  let activeCoords=[];
-  for(let li=0;li<idx&&li<ROUTES.length;li++){
-    if(activeCoords.length===0)activeCoords=ROUTES[li].slice();
-    else activeCoords=activeCoords.concat(ROUTES[li].slice(1));
-  }
+  // Active route line (straight between stops up to current day)
+  const activeCoords=DAYS.slice(0,idx+1).map(x=>[x.lat,x.lng]);
   activeLine.setLatLngs(activeCoords);
   activeGlow.setLatLngs(activeCoords);
 
-  // Markers
+  // Markers — stop markers highlight active; POI markers always fully visible
   stopMk.forEach((m,i)=>{const el=document.getElementById('s'+i);if(el)el.classList.toggle('active',i===idx)});
-  poiMk.forEach(m=>{const el=m.getElement();if(el){el.style.opacity=m.di===idx?'1':'0.2';el.style.transition='opacity .3s,transform .3s';el.style.transform=m.di===idx?'scale(1)':'scale(.7)'}});
 
   // Fly (maxZoom capped at 12)
   if(d.pois.length>1){const b=L.latLngBounds([[d.lat,d.lng]]);d.pois.forEach(p=>b.extend([p.lat,p.lng]));map.flyToBounds(b.pad(.3),{duration:.8,maxZoom:12})}
@@ -287,10 +259,18 @@ function nav(delta){const n=curDay+delta;if(n>=0&&n<DAYS.length)setDay(n)}
 // Mobile drawer toggle
 function toggleMobileCard(){
   const c=document.getElementById('dayCard');
-  c.classList.toggle('drawer-open');
+  const h=document.getElementById('drawerHandle');
+  const isOpen=c.classList.toggle('drawer-open');
+  if(h){
+    h.classList.toggle('open',isOpen);
+    // Shift handle to sit at the edge of the open drawer
+    h.style.left=isOpen?Math.min(window.innerWidth*0.8,340)+'px':'0px';
+  }
 }
 function closeMobileCard(){
   document.getElementById('dayCard').classList.remove('drawer-open');
+  const h=document.getElementById('drawerHandle');
+  if(h){h.classList.remove('open');h.style.left='0px';}
 }
 
 // ━━━ SWIPE ━━━
@@ -407,7 +387,7 @@ function positionLegend(){
 }
 
 // ━━━ RESIZE ━━━
-let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{map.invalidateSize();wResize();positionLegend();if(!isMob())document.getElementById('dayCard').classList.remove('drawer-open')},200)});
+let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{map.invalidateSize();wResize();positionLegend();if(!isMob()){document.getElementById('dayCard').classList.remove('drawer-open');const h=document.getElementById('drawerHandle');if(h){h.classList.remove('open');h.style.left='0px'}}},200)});
 
 // ━━━ WEATHER CARD (Compass Rose) ━━━
 function updateWxCard(wx){
