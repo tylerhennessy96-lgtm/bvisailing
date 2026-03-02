@@ -151,34 +151,33 @@ DAYS.forEach(d=>{d.wx.moon=getMoonPhase(d.iso)});
 const map=L.map('map',{center:[18.50,-64.55],zoom:11,zoomControl:false,maxZoom:13});
 L.control.zoom({position:'topright'}).addTo(map);
 
-// Tile layers — ocean chart (default) & satellite
-const oceanBase=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}',{
-  attribution:'Tiles &copy; Esri &mdash; GEBCO, NOAA, National Geographic',maxZoom:13
-}).addTo(map);
-const oceanRef=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Reference/MapServer/tile/{z}/{y}/{x}',{
-  attribution:'',maxZoom:13
-}).addTo(map);
+// Tile layers — satellite (default) & ocean chart (alternate)
 const satLayer=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
   attribution:'Tiles &copy; Esri &mdash; Earthstar Geographics',maxZoom:13
+}).addTo(map);
+const oceanBase=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}',{
+  attribution:'Tiles &copy; Esri &mdash; GEBCO, NOAA, National Geographic',maxZoom:13
 });
-let isSatellite=false;
+const oceanRef=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Reference/MapServer/tile/{z}/{y}/{x}',{
+  attribution:'',maxZoom:13
+});
+let isSatellite=true;
 
 function toggleMapLayer(){
   const btn=document.getElementById('layerToggle');
   if(isSatellite){
     map.removeLayer(satLayer);
     oceanBase.addTo(map);oceanRef.addTo(map);
-    // Re-order: move tile panes below overlays
     oceanBase.bringToBack();
-    btn.innerHTML='<div class="lt-icon">🛰️</div><div class="lt-lbl">SAT</div>';
-    btn.title='Switch to satellite';
+    btn.innerHTML='<div class="lt-icon">🛰️</div><div class="lt-lbl">SATELLITE</div>';
+    btn.title='Switch to satellite imagery';
     document.querySelector('.leaflet-tile-pane').style.filter='saturate(1.15) brightness(1.02)';
   }else{
     map.removeLayer(oceanBase);map.removeLayer(oceanRef);
     satLayer.addTo(map);
     satLayer.bringToBack();
-    btn.innerHTML='<div class="lt-icon">🗺️</div><div class="lt-lbl">MAP</div>';
-    btn.title='Switch to chart';
+    btn.innerHTML='<div class="lt-icon">🗺️</div><div class="lt-lbl">CHART</div>';
+    btn.title='Switch to nautical chart';
     document.querySelector('.leaflet-tile-pane').style.filter='saturate(1.1) brightness(1.05)';
   }
   isSatellite=!isSatellite;
@@ -458,20 +457,14 @@ function buildItin(){
 function positionLegend(){
   const wxCard=document.getElementById('wxCard');
   const legend=document.getElementById('legendCard');
-  const layerBtn=document.getElementById('layerToggle');
   const mapRect=document.getElementById('map').getBoundingClientRect();
   const zoomCtrl=document.querySelector('.leaflet-top.leaflet-right .leaflet-control-zoom');
   if(!wxCard)return;
   if(isMob()){
-    // On mobile: position zoom below wx card, layer toggle below zoom
+    // On mobile: position zoom below wx card
     if(zoomCtrl){
       const wxRect=wxCard.getBoundingClientRect();
       zoomCtrl.style.marginTop=(wxRect.bottom-mapRect.top+8)+'px';
-    }
-    if(layerBtn){
-      const zoomRect=zoomCtrl?zoomCtrl.getBoundingClientRect():wxCard.getBoundingClientRect();
-      layerBtn.style.top=(zoomRect.bottom+8)+'px';
-      layerBtn.style.right='6px';
     }
     return;
   }
@@ -481,12 +474,6 @@ function positionLegend(){
   // Position zoom control below legend
   const legendRect=legend.getBoundingClientRect();
   if(zoomCtrl)zoomCtrl.style.marginTop=(legendRect.bottom-mapRect.top+12)+'px';
-  // Position layer toggle below zoom
-  if(layerBtn&&zoomCtrl){
-    const zoomRect=zoomCtrl.getBoundingClientRect();
-    layerBtn.style.top=(zoomRect.bottom+8)+'px';
-    layerBtn.style.right='14px';
-  }
 }
 
 // ━━━ RESIZE ━━━
