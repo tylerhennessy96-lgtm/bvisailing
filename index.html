@@ -54,7 +54,7 @@ html,body{height:100%;height:-webkit-fill-available;font-family:'IBM Plex Sans',
 .tl-dot.d0{background:var(--teal);border-color:var(--teal)}.tl-dot.d0.active{background:var(--teal);border-color:var(--teal);box-shadow:0 0 14px rgba(45,212,191,.5)}.tl-dot.d0.visited{background:var(--teal);border-color:var(--teal);opacity:.5}
 .tl-dot-lbl{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:500;color:var(--text-secondary);white-space:nowrap;pointer-events:none}
 .tl-dot.active .tl-dot-lbl{color:var(--coral);font-weight:600}.tl-dot.d0.active .tl-dot-lbl{color:var(--teal)}
-.tl-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--glass-border);background:rgba(201,168,76,.05);color:var(--text-primary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0}
+.tl-btn{width:44px;height:44px;border-radius:50%;border:1px solid var(--glass-border);background:rgba(201,168,76,.05);color:var(--text-primary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0}
 .tl-btn:hover{background:rgba(201,168,76,.12);border-color:var(--brass-light);color:var(--brass-light)}
 .tl-btn:disabled{opacity:.25;cursor:not-allowed}
 
@@ -209,7 +209,7 @@ html,body{height:100%;height:-webkit-fill-available;font-family:'IBM Plex Sans',
 .tl-row{gap:6px}.tl-stops{height:28px}
 .tl-dot{width:13px;height:13px}
 .tl-dot-lbl{display:none}.tl-dot.active .tl-dot-lbl{display:block;font-size:7px;bottom:-13px}
-.tl-btn{width:30px;height:30px}
+.tl-btn{width:36px;height:36px}
 .ic{padding:24px 16px 60px}.ih h1{font-size:28px}.ih .meta{font-size:10px;gap:8px}
 .id{padding-left:30px;margin-bottom:32px}.id-date{font-size:18px}
 .tw{margin:0 -16px;padding:0 16px}.rt{min-width:480px}
@@ -259,17 +259,16 @@ html,body{height:100%;height:-webkit-fill-available;font-family:'IBM Plex Sans',
   <div class="tl-panel">
     <div class="tl-header">
       <div class="tl-label" id="tlLabel"></div>
-      <div class="tl-wx" id="tlWx"></div>
     </div>
     <div class="tl-row">
-      <button class="tl-btn" id="prevBtn" onclick="nav(-1)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <button class="tl-btn" id="prevBtn" onclick="nav(-1)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></button>
       <div class="tl-stops"><div class="tl-track"><div class="tl-fill" id="trackFill"></div></div><div class="tl-dots" id="dotRow"></div></div>
-      <button class="tl-btn" id="nextBtn" onclick="nav(1)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></button>
+      <button class="tl-btn" id="nextBtn" onclick="nav(1)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></button>
     </div>
   </div>
 </div>
 <div id="itin-view"><div class="ic" id="itinC"></div></div>
 <div id="flights-view"><div class="fl-c" id="flightsC"></div></div>
-<script src="app.js?v=10"></script>
+<script src="app.js?v=12"></script>
 </body>
 </html>
