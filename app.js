@@ -7,7 +7,7 @@ nm:'—',sail:'Arrival day',lat:18.4268,lng:-64.6165,
 desc:'Arrive in Tortola and check in at The Moorings Yacht Club in Road Town. Meet the crew, provision the boat, do a safety briefing, and get familiar with your 52-foot catamaran. Head into Road Town for supplies, explore the marina, and settle in — tomorrow we sail.',
 tips:["Provision at Bobby's Supermarket or Riteway near the marina.","Stock up on ice, sunscreen, and cash for mooring ball tenders.","Do a thorough boat check with the Moorings team before signing off.","Dinner at the marina or a short walk into Road Town."],
 pois:[{name:'The Moorings Yacht Club',type:'landmark',lat:18.4268,lng:-64.6165,icon:'⚓',note:'Home base — departure & return'},{name:'Road Town Waterfront',type:'restaurant',lat:18.4280,lng:-64.6200,icon:'🍽',note:'Several restaurants for arrival dinner'}],
-wx:{wind:'18–22 kts',dir:'E',deg:85,temp:'81°F',seas:'Calm in harbour'}},
+wx:{wind:'15–20 kts',dir:'E',deg:90,temp:'83°F',seas:'3–4 ft'}},
 
 {day:1,date:'Sun, March 7',iso:'2026-03-07',label:'Norman Is.',
 title:'Norman Island — Treasure Island',
@@ -16,7 +16,7 @@ nm:'~12 nm',sail:'Beam reach',lat:18.3195,lng:-64.6189,
 desc:'Depart The Moorings at 9–10 am. Beam reach south to Norman Island — the legendary Treasure Island. Grab moorings at The Bight, then dinghy to snorkel Treasure Point and The Caves: three sea caves you can swim into, teeming with fish and sea turtles.',
 tips:['Mooring balls at The Bight are plentiful — easiest anchorage.','The Caves are best snorkeled before midday.','Fuel up at The Moorings before departure.'],
 pois:[{name:'Treasure Point / The Caves',type:'snorkel',lat:18.3160,lng:-64.6250,icon:'🤿',note:'Three swim-through sea caves; bring underwater light'},{name:'Pirates Bight',type:'restaurant',lat:18.3200,lng:-64.6180,icon:'🍽',note:'Beach restaurant at The Bight'},{name:'Willy T',type:'bar',lat:18.3190,lng:-64.6175,icon:'🍹',note:'Famous floating bar — jump from the upper deck'}],
-wx:{wind:'17–21 kts',dir:'E',deg:90,temp:'81°F',seas:'3–4 ft'}},
+wx:{wind:'15–20 kts',dir:'E',deg:90,temp:'83°F',seas:'3–5 ft'}},
 
 {day:2,date:'Mon, March 8',iso:'2026-03-08',label:'Cooper Is.',
 title:'The Indians & Cooper Island',
@@ -25,7 +25,7 @@ nm:'~8 nm',sail:'Short easy sail NE',lat:18.3830,lng:-64.5120,
 desc:"Detour to The Indians — four dramatic volcanic rock pinnacles with the BVI's finest snorkeling. Then a short sail to Cooper Island's Manchioneel Bay. The Beach Club is one of the best restaurants in the BVI, with craft rum and a microbrewery.",
 tips:['Call Cooper Island Beach Club to reserve mooring and dinner.','Try their house-made rum — exceptional.','Snorkeling off the beach here is excellent.'],
 pois:[{name:'The Indians',type:'snorkel',lat:18.3357,lng:-64.5990,icon:'🤿',note:'Four volcanic pinnacles — BVI crown jewel snorkeling'},{name:'Cooper Island Beach Club',type:'restaurant',lat:18.3835,lng:-64.5115,icon:'🍽',note:'Reserve dinner in advance'}],
-wx:{wind:'16–20 kts',dir:'E',deg:85,temp:'82°F',seas:'2–3 ft'}},
+wx:{wind:'15–18 kts',dir:'E',deg:90,temp:'83°F',seas:'3–4 ft'}},
 
 {day:3,date:'Tue, March 9',iso:'2026-03-09',label:'Virgin Gorda',
 title:'The Baths & North Sound',
@@ -34,7 +34,7 @@ nm:'~14 nm',sail:'Most spectacular day',lat:18.4900,lng:-64.3550,
 desc:"Your most breathtaking day. Sail to The Baths — enormous granite boulders forming cathedral-like grottos and swim-throughs. Go early before ferries. Then into North Sound, one of the Caribbean's most protected lagoons. Bitter End Yacht Club for dinner, Saba Rock for happy hour 4–6 pm.",
 tips:['Pre-book Bitter End moorings and dinner.','Saba Rock happy hour 4–6 pm — don\'t miss.','Water shoes helpful for The Baths.'],
 pois:[{name:'The Baths',type:'snorkel',lat:18.4310,lng:-64.4430,icon:'🤿',note:'Cathedral granite grottos and swim-throughs'},{name:'Bitter End Yacht Club',type:'restaurant',lat:18.4920,lng:-64.3380,icon:'🍽',note:'Pre-book dinner — fills fast in March'},{name:'Saba Rock',type:'bar',lat:18.4902,lng:-64.3510,icon:'🍹',note:'Happy hour 4–6 pm; rum cocktails & sunset'}],
-wx:{wind:'15–18 kts',dir:'ENE',deg:70,temp:'82°F',seas:'2–3 ft'}},
+wx:{wind:'15–20 kts',dir:'E',deg:90,temp:'82°F',seas:'4–5 ft'}},
 
 {day:4,date:'Wed, March 10',iso:'2026-03-10',label:'Anegada',
 title:'Anegada — The Adventure Day',
@@ -43,7 +43,7 @@ nm:'~14 nm',sail:'Lively sail north',lat:18.7270,lng:-64.3350,
 desc:"A flat coral atoll barely 28 ft above sea level, ringed by one of the Caribbean's largest barrier reefs. Lively sail north — follow channel markers carefully. Rent golf carts: flamingos in salt ponds, deserted Loblolly Bay, pristine reef snorkeling. Pre-order lobster.",
 tips:['Pre-book mooring via BVI National Parks Trust — required.','Call Flash of Beauty to pre-order lobster.','Book a local snorkel guide for conch & reef tours.'],
 pois:[{name:'Loblolly Bay',type:'snorkel',lat:18.7400,lng:-64.3550,icon:'🤿',note:'Deserted north shore; extraordinary visibility'},{name:'Anegada Barrier Reef',type:'snorkel',lat:18.7350,lng:-64.3200,icon:'🤿',note:"One of Caribbean's largest reefs — turtles, rays"},{name:'Flash of Beauty',type:'restaurant',lat:18.7230,lng:-64.3300,icon:'🍽',note:'Pre-order fresh lobster — world famous'},{name:'Flamingo Ponds',type:'landmark',lat:18.7180,lng:-64.3530,icon:'⚓',note:'Pink flamingos in the salt ponds'}],
-wx:{wind:'14–18 kts',dir:'ENE',deg:65,temp:'83°F',seas:'3–4 ft'}},
+wx:{wind:'18–22 kts',dir:'E',deg:90,temp:'82°F',seas:'5–7 ft'}},
 
 {day:5,date:'Thu, March 11',iso:'2026-03-11',label:'Trellis Bay',
 title:'Trellis Bay — Rest & Resupply',
@@ -52,7 +52,7 @@ nm:'~14 nm',sail:'Downwind run',lat:18.4430,lng:-64.5320,
 desc:'A rewarding downwind run south. Trellis Bay on Beef Island is a relaxed anchorage near the BVI airport — convenient for restocking, laundry, or crew swaps. Several casual beach bars. Your intentional breather day.',
 tips:['Riteway grocery nearby for provisioning.','Check full moon calendar — Trellis Bay party is a BVI institution.'],
 pois:[{name:'Trellis Bay Beach Bars',type:'bar',lat:18.4435,lng:-64.5310,icon:'🍹',note:'Several casual beach bars'},{name:'Riteway Grocery',type:'landmark',lat:18.4450,lng:-64.5350,icon:'⚓',note:'Provisioning top-ups'}],
-wx:{wind:'13–16 kts',dir:'E',deg:80,temp:'83°F',seas:'1–2 ft'}},
+wx:{wind:'18–22 kts',dir:'ENE',deg:67,temp:'83°F',seas:'4–6 ft'}},
 
 {day:6,date:'Fri, March 12',iso:'2026-03-12',label:'White Bay',
 title:'Jost Van Dyke — White Bay',
@@ -61,7 +61,7 @@ nm:'~18 nm',sail:'Most social day',lat:18.4380,lng:-64.7530,
 desc:"Sail west to JVD. White Bay is a perfect crescent of white sand with the Soggy Dollar Bar — birthplace of the Painkiller, where you swim ashore because there's no dock. Ivan's Stress Free Bar for legendary conch fritters. Arrive by noon — most competitive anchorage in the BVI.",
 tips:['Moored by noon — balls disappear fast.',"Painkiller: Pusser's rum, cream of coconut, pineapple, OJ, nutmeg.","Ivan's conch fritters — do not skip."],
 pois:[{name:'Soggy Dollar Bar',type:'bar',lat:18.4385,lng:-64.7540,icon:'🍹',note:'Birthplace of the Painkiller — swim ashore'},{name:"Ivan's Stress Free Bar",type:'bar',lat:18.4375,lng:-64.7525,icon:'🍹',note:'Legendary conch fritters & fish tacos'}],
-wx:{wind:'14–17 kts',dir:'ENE',deg:70,temp:'83°F',seas:'2–3 ft'}},
+wx:{wind:'15–20 kts',dir:'ENE',deg:67,temp:'83°F',seas:'3–5 ft'}},
 
 {day:7,date:'Sat, March 13',iso:'2026-03-13',label:'JVD Explore',
 title:'Great Harbour & Little Jost Van Dyke',
@@ -70,7 +70,7 @@ nm:'~3 nm',sail:'Relaxed exploration',lat:18.4480,lng:-64.7680,
 desc:"Leisurely day on JVD. Dinghy to Little Jost for lunch at Foxy's Taboo — reserve lobster in advance. Diamond Cay next door has the best snorkeling on JVD: sea turtles and spotted eagle rays. Evening at the legendary Foxy's Main Bar in Great Harbour.",
 tips:["Call Foxy's Taboo for lobster: +1 284-340-0703.","Foxy himself is a BVI legend — improvised calypso.","Diamond Cay: eagle rays spotted here more than almost anywhere."],
 pois:[{name:'Diamond Cay',type:'snorkel',lat:18.4530,lng:-64.7750,icon:'🤿',note:'Eagle rays & sea turtles — most reliable spot'},{name:"Foxy's Taboo",type:'restaurant',lat:18.4510,lng:-64.7720,icon:'🍽',note:'Pre-order lobster; +1 284-340-0703'},{name:"Foxy's Main Bar",type:'bar',lat:18.4425,lng:-64.7520,icon:'🍹',note:"One of the Caribbean's great institutions"}],
-wx:{wind:'12–15 kts',dir:'E',deg:85,temp:'84°F',seas:'1–2 ft'}},
+wx:{wind:'15–18 kts',dir:'E',deg:90,temp:'84°F',seas:'2–3 ft'}},
 
 {day:8,date:'Sun, March 15',iso:'2026-03-15',label:'Return',
 title:'Return to Road Town',
@@ -79,7 +79,7 @@ nm:'~9 nm',sail:'Closing the loop',lat:18.4268,lng:-64.6165,
 desc:"A pleasant 9 nm sail east closes the loop. Return the boat to The Moorings by mid-morning March 15. Farewell lunch on Road Town's waterfront, souvenirs at the marina, and toast an extraordinary week.",
 tips:['Arrive by 10–11 am for check-in.','Moorings dock team handles the process.','A final Painkiller at the marina bar is practically tradition.'],
 pois:[{name:'The Moorings Yacht Club',type:'landmark',lat:18.4268,lng:-64.6165,icon:'⚓',note:'Return by 10–11 am March 15'}],
-wx:{wind:'13–16 kts',dir:'ENE',deg:75,temp:'83°F',seas:'1–2 ft'}}
+wx:{wind:'15–18 kts',dir:'E',deg:90,temp:'83°F',seas:'3–4 ft'}}
 ];
 
 // ━━━ DATE AWARENESS (timezone-safe) ━━━
@@ -109,8 +109,8 @@ const todayIdx=getTodayIdx();
 // ━━━ MOON PHASE CALCULATOR ━━━
 function getMoonPhase(isoDate){
   const [y,m,d]=isoDate.split('-').map(Number);
-  // Reference: New Moon ~Feb 28, 2026 00:45 UTC (preceding the March 14 full moon)
-  const refNewMoon=Date.UTC(2026,1,28,0,45);
+  // Reference: New Moon ~Feb 17, 2026 12:01 UTC (Full Moon was March 3)
+  const refNewMoon=Date.UTC(2026,1,17,12,1);
   const SYNODIC=29.530588853;
   // Use 20:00 UTC (~8pm Caribbean evening, prime moon viewing)
   const dateMs=Date.UTC(y,m-1,d,20,0);
@@ -138,7 +138,7 @@ function getMoonPhase(isoDate){
     {emoji:'🌔',name:'Waxing Gibbous'},
     {emoji:'🌕',name:'Full Moon'},
     {emoji:'🌖',name:'Waning Gibbous'},
-    {emoji:'🌗',name:'Third Quarter'},
+    {emoji:'🌗',name:'Last Quarter'},
     {emoji:'🌘',name:'Waning Crescent'}
   ];
   return {...phases[idx],illumination:pct,age:Math.round(age*10)/10};
