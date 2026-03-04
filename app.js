@@ -271,15 +271,8 @@ function setDay(idx){
   // Track fill
   document.getElementById('trackFill').style.width=(DAYS.length>1?(idx/(DAYS.length-1))*100:0)+'%';
 
-  // Label + badge (timezone-safe countdown)
-  let badge='';
-  if(ts==='during'&&isToday)badge='<span class="live-badge">TODAY</span>';
-  else if(ts==='before'){
-    const today=todayLocal(),start=parseLocalDate(DAYS[0].iso);
-    const dl=Math.ceil((start-today)/864e5);
-    console.log('[Countdown Debug]','today:',today.toISOString(),'start:',start.toISOString(),'diff ms:',(start-today),'days:',dl);
-    badge=`<span class="live-badge future">${dl}d to go</span>`;
-  }
+  // Label + badge
+  const badge=ts==='during'&&isToday?'<span class="live-badge">TODAY</span>':'';
   document.getElementById('tlLabel').innerHTML=`Day ${d.day} · ${d.title} ${badge} <span class="ds">${d.date}</span>`;
 
   updateWxCard(d.wx);
