@@ -72,7 +72,7 @@ tips:["Call Foxy's Taboo for lobster: +1 284-340-0703.","Foxy himself is a BVI l
 pois:[{name:'Diamond Cay',type:'snorkel',lat:18.4530,lng:-64.7750,icon:'🤿',note:'Eagle rays & sea turtles — most reliable spot'},{name:"Foxy's Taboo",type:'restaurant',lat:18.4510,lng:-64.7720,icon:'🍽',note:'Pre-order lobster; +1 284-340-0703'},{name:"Foxy's Main Bar",type:'bar',lat:18.4425,lng:-64.7520,icon:'🍹',note:"One of the Caribbean's great institutions"}],
 wx:{wind:'12–15 kts',dir:'E',deg:85,temp:'84°F',seas:'1–2 ft'}},
 
-{day:8,date:'Sun, March 14–15',iso:'2026-03-14',label:'Return',
+{day:8,date:'Sun, March 15',iso:'2026-03-15',label:'Return',
 title:'Return to Road Town',
 route:'Jost Van Dyke → The Moorings, Road Town',
 nm:'~9 nm',sail:'Closing the loop',lat:18.4268,lng:-64.6165,

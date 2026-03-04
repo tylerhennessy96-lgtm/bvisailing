@@ -31,8 +31,8 @@ html,body{height:100%;height:-webkit-fill-available;font-family:'IBM Plex Sans',
 #map-view{position:absolute;top:var(--nav-h);left:0;right:0;bottom:0}
 #map{width:100%;height:100%}.leaflet-tile-pane{filter:saturate(1.15) brightness(1.02)}
 
-.tl-panel{position:fixed;bottom:0;left:0;right:0;z-index:900;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--glass-border);padding:14px 20px calc(14px + var(--safe-b));background:var(--wave-bg) repeat,linear-gradient(0deg,rgba(7,25,52,.95),rgba(12,45,90,.93));background-size:120px 20px,100% 100%}
-.tl-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:12px}
+.tl-panel{position:fixed;bottom:0;left:0;right:0;z-index:900;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--glass-border);padding:12px 20px calc(20px + var(--safe-b));background:var(--wave-bg) repeat,linear-gradient(0deg,rgba(7,25,52,.95),rgba(12,45,90,.93));background-size:120px 20px,100% 100%}
+.tl-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:12px}
 .tl-label{font-family:'Cinzel',serif;font-size:18px;font-weight:500;color:var(--sand);display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
 .tl-label .ds{font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:400;color:var(--text-secondary)}
 .tl-wx{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-secondary);flex-shrink:0}
@@ -200,7 +200,7 @@ html,body{height:100%;height:-webkit-fill-available;font-family:'IBM Plex Sans',
 .dc-close{display:flex}
 .dc-title{font-size:18px}.dc-desc{font-size:12px}
 .drawer-handle{display:flex;top:calc(var(--nav-h) + (100vh - var(--nav-h) - var(--tl-h)) / 2 - 22px)}.legend{display:none}
-.tl-panel{padding:6px 10px calc(6px + var(--safe-b))}
+.tl-panel{padding:6px 10px calc(16px + var(--safe-b))}
 .tl-header{flex-direction:column;gap:2px;margin-bottom:2px}
 .tl-label{font-size:12px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4}
 .tl-label .ds{font-size:10px;opacity:.7}
@@ -247,7 +247,7 @@ html,body{height:100%;height:-webkit-fill-available;font-family:'IBM Plex Sans',
   <div class="wx-card" id="wxCard"></div>
   <div class="dc" id="dayCard"></div>
   <div class="legend" id="legendCard">
-    <div class="lg-i"><div class="lg-s" style="background:var(--teal);color:#fff;font-size:9px;font-weight:700">0</div>Start</div>
+    <div class="lg-i"><div class="lg-s" style="background:var(--teal);color:#fff;font-size:9px;font-weight:700">0</div>Start/Finish</div>
     <div class="lg-i"><div class="lg-s" style="background:var(--coral);color:#fff;font-size:9px;font-weight:700">1</div>Day Stop</div>
     <div class="lg-i"><div class="lg-s mp-sn" style="width:20px;height:20px;font-size:11px">🤿</div>Snorkeling</div>
     <div class="lg-i"><div class="lg-s mp-rs" style="width:20px;height:20px;font-size:11px">🍽</div>Restaurant</div>
@@ -269,6 +269,6 @@ html,body{height:100%;height:-webkit-fill-available;font-family:'IBM Plex Sans',
 </div>
 <div id="itin-view"><div class="ic" id="itinC"></div></div>
 <div id="flights-view"><div class="fl-c" id="flightsC"></div></div>
-<script src="app.js?v=12"></script>
+<script src="app.js?v=13"></script>
 </body>
 </html>
