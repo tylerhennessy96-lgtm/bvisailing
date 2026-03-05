@@ -1,3 +1,6 @@
+// ━━━ FLIGHT STATUS TIMESTAMP (updated by cron) ━━━
+const FLIGHT_STATUS_UPDATED = '2026-03-05, 6:00 PM';
+
 // ━━━ ITINERARY DATA: Day 0–8 ━━━
 const DAYS=[
 {day:0,date:'Sat, March 6',iso:'2026-03-06',label:'Road Town',
@@ -504,12 +507,20 @@ function buildFlights(){
     else counts.scheduled++;
   });
 
-  // Format current time for "last updated"
+  // Next refresh calculation based on cron schedule (6am, 12pm, 4pm, 8pm daily)
   const now=new Date();
-  const mon=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][now.getMonth()];
-  const hr=now.getHours()%12||12,ampm=now.getHours()>=12?'PM':'AM';
-  const mins=String(now.getMinutes()).padStart(2,'0');
-  const updatedStr=`${mon} ${now.getDate()}, ${hr}:${mins} ${ampm}`;
+  const cronHours=[6,12,16,20];
+  let nextRefresh='';
+  {
+    const h12=hr=>(hr%12||12)+' '+(hr>=12?'PM':'AM');
+    let found=false;
+    for(const ch of cronHours){
+      if(now.getHours()<ch||(now.getHours()===ch&&now.getMinutes()===0)){
+        nextRefresh=h12(ch);found=true;break;
+      }
+    }
+    if(!found)nextRefresh=h12(cronHours[0])+' tomorrow';
+  }
 
   let h=`<div class="fl-header">
     <h1>Flight Tracker</h1>
@@ -519,9 +530,9 @@ function buildFlights(){
   // Last updated bar
   h+=`<div class="fl-updated">
     <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-    <span>Status as of ${updatedStr}</span>
+    <span>Status as of ${FLIGHT_STATUS_UPDATED}</span>
     <span>·</span>
-    <span>Next refresh in 3 hours</span>
+    <span>Next refresh at ${nextRefresh}</span>
   </div>`;
 
   // Summary bar
