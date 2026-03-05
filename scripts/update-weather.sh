@@ -19,6 +19,18 @@ git pull >> "$LOG_FILE" 2>&1
 
 # Run claude in headless mode to update weather data
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Running Claude to update weather..." >> "$LOG_FILE"
-$CLAUDE -p "Search the web for the latest BVI marine weather forecast. Look for wind speed, wind direction, sea state, and temperature for the British Virgin Islands for the next 7-10 days. Then open app.js and update the weather data (wx object) for each day in the DAYS array with the latest forecast data. Only update days that haven't passed yet (today is $(date '+%Y-%m-%d')). Bump the cache version number. Commit and push the changes with message 'auto: update weather forecast'." --allowedTools 'Bash(git commit:*),Bash(git push:*),Edit,Read,WebSearch,WebFetch' >> "$LOG_FILE" 2>&1
+TIMESTAMP="$(date '+%Y-%m-%d, %-I:%M %p')"
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Weather update complete" >> "$LOG_FILE"
+if $CLAUDE -p "Search the web for the latest BVI marine weather forecast. Look for wind speed, wind direction, sea state, and temperature for the British Virgin Islands for the next 7-10 days. Then open app.js and update the weather data (wx object) for each day in the DAYS array with the latest forecast data. Only update days that haven't passed yet (today is $(date '+%Y-%m-%d')). Also update the WEATHER_UPDATED variable at the top of app.js to '${TIMESTAMP}' and set WEATHER_UPDATE_STATUS to 'success'. Bump the cache version number. Commit and push the changes with message 'auto: update weather forecast'." --allowedTools 'Bash(git commit:*),Bash(git push:*),Edit,Read,WebSearch,WebFetch' >> "$LOG_FILE" 2>&1; then
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] Weather update complete" >> "$LOG_FILE"
+else
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] Weather update failed, setting status to failed" >> "$LOG_FILE"
+  # Update the status to 'failed' with the current timestamp
+  sed -i '' "s/const WEATHER_UPDATED = '.*'/const WEATHER_UPDATED = '${TIMESTAMP}'/" "$PROJECT_DIR/app.js"
+  sed -i '' "s/const WEATHER_UPDATE_STATUS = '.*'/const WEATHER_UPDATE_STATUS = 'failed'/" "$PROJECT_DIR/app.js"
+  cd "$PROJECT_DIR"
+  git add app.js
+  git commit -m "auto: mark weather update as failed"
+  git push
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] Marked weather update as failed" >> "$LOG_FILE"
+fi

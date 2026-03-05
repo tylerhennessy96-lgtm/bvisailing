@@ -1,6 +1,10 @@
 // ━━━ FLIGHT STATUS TIMESTAMP (updated by cron) ━━━
 const FLIGHT_STATUS_UPDATED = '2026-03-05, 6:00 PM';
 
+// ━━━ WEATHER STATUS TIMESTAMP (updated by cron) ━━━
+const WEATHER_UPDATED = '2026-03-05, 6:00 PM';
+const WEATHER_UPDATE_STATUS = 'success'; // 'success' or 'failed'
+
 // ━━━ ITINERARY DATA: Day 0–8 ━━━
 const DAYS=[
 {day:0,date:'Sat, March 6',iso:'2026-03-06',label:'Road Town',
@@ -657,6 +661,11 @@ function updateWxCard(wx){
       <div class="wx-card-row"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg><span class="val">${wx.temp}</span></div>
       <div class="wx-card-row"><svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round"><path d="M2 12c2-4 5-6 10-6s8 2 10 6"/><path d="M2 18c2-4 5-6 10-6s8 2 10 6"/></svg><span class="val">${wx.seas}</span></div>
       <div class="wx-card-row"><span style="font-size:16px;line-height:1">${wx.moon.emoji}</span><span class="val">${wx.moon.name} · ${wx.moon.illumination}%</span></div>
+    </div>
+    <div class="wx-card-footer">
+      <div class="wx-footer-row">Updated: ${WEATHER_UPDATED}</div>
+      ${WEATHER_UPDATE_STATUS==='failed'?'<div class="wx-footer-warn">⚠ Last update failed</div>':''}
+      <div class="wx-footer-row">Next update: ${(()=>{const now=new Date(),h=now.getHours(),m=now.getMinutes();const fmt=hr=>(hr%12||12)+':'+'00 '+(hr>=12?'PM':'AM');if(h<6||(h===6&&m===0))return fmt(6);if(h<18||(h===18&&m===0))return fmt(18);return fmt(6)+' tomorrow';})()}</div>
     </div>`;
   // Reposition legend after wx card renders
   requestAnimationFrame(positionLegend);
