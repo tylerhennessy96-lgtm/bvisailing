@@ -4,7 +4,7 @@ const DAYS=[
 title:'Road Town — Arrival & Provisioning',
 route:'Arrive at The Moorings Yacht Club, Road Town, Tortola',
 nm:'—',sail:'Arrival day',lat:18.4268,lng:-64.6165,
-desc:'Arrive in Tortola and check in at The Moorings Yacht Club in Road Town. Meet the crew, provision the boat, do a safety briefing, and get familiar with your 52-foot catamaran. Head into Road Town for supplies, explore the marina, and settle in — tomorrow we sail.',
+desc:'Arrive in Tortola and check in at The Moorings Yacht Club in Road Town. Meet the crew, provision the boat, do a safety briefing, and get familiar with your 50-foot catamaran. Head into Road Town for supplies, explore the marina, and settle in — tomorrow we sail.',
 tips:["Provision at Bobby's Supermarket or Riteway near the marina.","Stock up on ice, sunscreen, and cash for mooring ball tenders.","Do a thorough boat check with the Moorings team before signing off.","Dinner at the marina or a short walk into Road Town."],
 pois:[{name:'The Moorings Yacht Club',type:'landmark',lat:18.4268,lng:-64.6165,icon:'⚓',note:'Home base — departure & return'},{name:'Road Town Waterfront',type:'restaurant',lat:18.4280,lng:-64.6200,icon:'🍽',note:'Several restaurants for arrival dinner'}],
 wx:{wind:'15–20 kts',dir:'E',deg:90,temp:'83°F',seas:'3–4 ft'}},
@@ -385,7 +385,7 @@ function buildItin(){
   }
   else if(ts==='during')sn=`<div style="margin-top:12px"><span class="live-badge" style="font-size:11px">Trip in progress — Day ${DAYS[todayIdx].day}</span></div>`;
 
-  let h=`<div class="ih"><h1>BVI Sailing Itinerary</h1><div class="sub">March 6–15, 2026 · 10 Guests · 52-foot Catamaran</div>${sn}<div class="meta"><span>⛵ THE MOORINGS, ROAD TOWN</span><span>🌊 15–20 KT TRADES</span><span>☀ 82–84°F</span></div></div>`;
+  let h=`<div class="ih"><h1>BVI Sailing Itinerary</h1><div class="sub">March 6–15, 2026 · 10 Guests · 50-foot Catamaran</div>${sn}<div class="meta"><span>⛵ THE MOORINGS, ROAD TOWN</span><span>🌊 15–20 KT TRADES</span><span>☀ 82–84°F</span></div></div>`;
 
   DAYS.forEach((d,i)=>{
     const it=i===todayIdx&&ts==='during',tb=it?' <span class="live-badge" style="font-size:9px">TODAY</span>':'';
