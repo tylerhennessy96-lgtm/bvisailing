@@ -7,7 +7,7 @@ const WEATHER_UPDATE_STATUS = 'success'; // 'success' or 'failed'
 
 // ━━━ ITINERARY DATA: Day 0–8 ━━━
 const DAYS=[
-{day:0,date:'Sat, March 6',iso:'2026-03-06',label:'Road Town',
+{day:0,date:'Sat, March 7',iso:'2026-03-07',label:'Road Town',
 title:'Road Town — Arrival & Provisioning',
 route:'Arrive at The Moorings Yacht Club, Road Town, Tortola',
 nm:'—',sail:'Arrival day',lat:18.4268,lng:-64.6165,
@@ -16,7 +16,7 @@ tips:["Provision at Bobby's Supermarket or Riteway near the marina.","Stock up o
 pois:[{name:'The Moorings Yacht Club',type:'landmark',lat:18.4268,lng:-64.6165,icon:'⚓',note:'Home base — departure & return'},{name:'Road Town Waterfront',type:'restaurant',lat:18.4280,lng:-64.6200,icon:'🍽',note:'Several restaurants for arrival dinner'}],
 wx:{wind:'15–20 kts',dir:'E',deg:90,temp:'83°F',seas:'3–4 ft'}},
 
-{day:1,date:'Sun, March 7',iso:'2026-03-07',label:'Norman Is.',
+{day:1,date:'Sun, March 8',iso:'2026-03-08',label:'Norman Is.',
 title:'Norman Island — Treasure Island',
 route:'The Moorings → Norman Island (The Bight)',
 nm:'~12 nm',sail:'Beam reach',lat:18.3195,lng:-64.6189,
@@ -25,7 +25,7 @@ tips:['Mooring balls at The Bight are plentiful — easiest anchorage.','The Cav
 pois:[{name:'Treasure Point / The Caves',type:'snorkel',lat:18.3160,lng:-64.6250,icon:'🤿',note:'Three swim-through sea caves; bring underwater light'},{name:'Pirates Bight',type:'restaurant',lat:18.3200,lng:-64.6180,icon:'🍽',note:'Beach restaurant at The Bight'},{name:'Willy T',type:'bar',lat:18.3190,lng:-64.6175,icon:'🍹',note:'Famous floating bar — jump from the upper deck'}],
 wx:{wind:'15–20 kts',dir:'E',deg:90,temp:'83°F',seas:'3–5 ft'}},
 
-{day:2,date:'Mon, March 8',iso:'2026-03-08',label:'Cooper Is.',
+{day:2,date:'Mon, March 9',iso:'2026-03-09',label:'Cooper Is.',
 title:'The Indians & Cooper Island',
 route:'Norman Island → The Indians → Cooper Island',
 nm:'~8 nm',sail:'Short easy sail NE',lat:18.3830,lng:-64.5120,
@@ -34,7 +34,7 @@ tips:['Call Cooper Island Beach Club to reserve mooring and dinner.','Try their 
 pois:[{name:'The Indians',type:'snorkel',lat:18.3357,lng:-64.5990,icon:'🤿',note:'Four volcanic pinnacles — BVI crown jewel snorkeling'},{name:'Cooper Island Beach Club',type:'restaurant',lat:18.3835,lng:-64.5115,icon:'🍽',note:'Reserve dinner in advance'}],
 wx:{wind:'15–18 kts',dir:'E',deg:90,temp:'83°F',seas:'3–4 ft'}},
 
-{day:3,date:'Tue, March 9',iso:'2026-03-09',label:'Virgin Gorda',
+{day:3,date:'Tue, March 10',iso:'2026-03-10',label:'Virgin Gorda',
 title:'The Baths & North Sound',
 route:'Cooper Island → The Baths → North Sound, Virgin Gorda',
 nm:'~14 nm',sail:'Most spectacular day',lat:18.4900,lng:-64.3550,
@@ -43,7 +43,7 @@ tips:['Pre-book Bitter End moorings and dinner.','Saba Rock happy hour 4–6 pm 
 pois:[{name:'The Baths',type:'snorkel',lat:18.4310,lng:-64.4430,icon:'🤿',note:'Cathedral granite grottos and swim-throughs'},{name:'Bitter End Yacht Club',type:'restaurant',lat:18.4920,lng:-64.3380,icon:'🍽',note:'Pre-book dinner — fills fast in March'},{name:'Saba Rock',type:'bar',lat:18.4902,lng:-64.3510,icon:'🍹',note:'Happy hour 4–6 pm; rum cocktails & sunset'}],
 wx:{wind:'15–20 kts',dir:'E',deg:90,temp:'82°F',seas:'4–5 ft'}},
 
-{day:4,date:'Wed, March 10',iso:'2026-03-10',label:'Anegada',
+{day:4,date:'Wed, March 11',iso:'2026-03-11',label:'Anegada',
 title:'Anegada — The Adventure Day',
 route:'North Sound, Virgin Gorda → Anegada',
 nm:'~14 nm',sail:'Lively sail north',lat:18.7270,lng:-64.3350,
@@ -52,7 +52,7 @@ tips:['Pre-book mooring via BVI National Parks Trust — required.','Call Flash 
 pois:[{name:'Loblolly Bay',type:'snorkel',lat:18.7400,lng:-64.3550,icon:'🤿',note:'Deserted north shore; extraordinary visibility'},{name:'Anegada Barrier Reef',type:'snorkel',lat:18.7350,lng:-64.3200,icon:'🤿',note:"One of Caribbean's largest reefs — turtles, rays"},{name:'Flash of Beauty',type:'restaurant',lat:18.7230,lng:-64.3300,icon:'🍽',note:'Pre-order fresh lobster — world famous'},{name:'Flamingo Ponds',type:'landmark',lat:18.7180,lng:-64.3530,icon:'⚓',note:'Pink flamingos in the salt ponds'}],
 wx:{wind:'18–22 kts',dir:'E',deg:90,temp:'82°F',seas:'5–7 ft'}},
 
-{day:5,date:'Thu, March 11',iso:'2026-03-11',label:'Trellis Bay',
+{day:5,date:'Thu, March 12',iso:'2026-03-12',label:'Trellis Bay',
 title:'Trellis Bay — Rest & Resupply',
 route:'Anegada → Trellis Bay, Tortola',
 nm:'~14 nm',sail:'Downwind run',lat:18.4430,lng:-64.5320,
@@ -61,7 +61,7 @@ tips:['Riteway grocery nearby for provisioning.','Check full moon calendar — T
 pois:[{name:'Trellis Bay Beach Bars',type:'bar',lat:18.4435,lng:-64.5310,icon:'🍹',note:'Several casual beach bars'},{name:'Riteway Grocery',type:'landmark',lat:18.4450,lng:-64.5350,icon:'⚓',note:'Provisioning top-ups'}],
 wx:{wind:'18–22 kts',dir:'ENE',deg:67,temp:'83°F',seas:'4–6 ft'}},
 
-{day:6,date:'Fri, March 12',iso:'2026-03-12',label:'White Bay',
+{day:6,date:'Fri, March 13',iso:'2026-03-13',label:'White Bay',
 title:'Jost Van Dyke — White Bay',
 route:'Trellis Bay → Jost Van Dyke: White Bay',
 nm:'~18 nm',sail:'Most social day',lat:18.4380,lng:-64.7530,
@@ -70,7 +70,7 @@ tips:['Moored by noon — balls disappear fast.',"Painkiller: Pusser's rum, crea
 pois:[{name:'Soggy Dollar Bar',type:'bar',lat:18.4385,lng:-64.7540,icon:'🍹',note:'Birthplace of the Painkiller — swim ashore'},{name:"Ivan's Stress Free Bar",type:'bar',lat:18.4375,lng:-64.7525,icon:'🍹',note:'Legendary conch fritters & fish tacos'}],
 wx:{wind:'15–20 kts',dir:'ENE',deg:67,temp:'83°F',seas:'3–5 ft'}},
 
-{day:7,date:'Sat, March 13',iso:'2026-03-13',label:'JVD Explore',
+{day:7,date:'Sat, March 14',iso:'2026-03-14',label:'JVD Explore',
 title:'Great Harbour & Little Jost Van Dyke',
 route:'White Bay → Little Jost Van Dyke → Great Harbour',
 nm:'~3 nm',sail:'Relaxed exploration',lat:18.4480,lng:-64.7680,
@@ -392,7 +392,7 @@ function buildItin(){
   }
   else if(ts==='during')sn=`<div style="margin-top:12px"><span class="live-badge" style="font-size:11px">Trip in progress — Day ${DAYS[todayIdx].day}</span></div>`;
 
-  let h=`<div class="ih"><h1>BVI Sailing Itinerary</h1><div class="sub">March 6–15, 2026 · 10 Guests · 50-foot Catamaran</div>${sn}<div class="meta"><span>⛵ THE MOORINGS, ROAD TOWN</span><span>🌊 15–20 KT TRADES</span><span>☀ 82–84°F</span></div></div>`;
+  let h=`<div class="ih"><h1>BVI Sailing Itinerary</h1><div class="sub">March 7–15, 2026 · 10 Guests · 50-foot Catamaran</div>${sn}<div class="meta"><span>⛵ THE MOORINGS, ROAD TOWN</span><span>🌊 15–20 KT TRADES</span><span>☀ 82–84°F</span></div></div>`;
 
   DAYS.forEach((d,i)=>{
     const it=i===todayIdx&&ts==='during',tb=it?' <span class="live-badge" style="font-size:9px">TODAY</span>':'';
